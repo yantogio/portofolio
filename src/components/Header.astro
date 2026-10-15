@@ -38,9 +38,8 @@ const closeLabel = lang === 'id' ? 'Tutup menu' : 'Close menu';
       hreflang={altLang}
       lang={altLang}
       class="mr-14 inline-flex items-center gap-1.5 text-sm font-semibold text-fg-2 transition-colors hover:text-fg lg:mr-0"
-      aria-label={t(lang, 'lang.switchLabel')}
     >
-      <Icon name="translate" />{altLang.toUpperCase()}
+      <Icon name="translate" />{altLang.toUpperCase()}<span class="sr-only">, {t(lang, 'lang.switchLabel')}</span>
     </a>
   </div>
 </header>

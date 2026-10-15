@@ -200,7 +200,7 @@ const splitAccent = (line: { id: string; en: string; accent?: { id: string; en: 
           ]}
           style={`top: calc(7rem + ${i} * 1.5rem)`}
         >
-          <p class:list={['font-display text-6xl font-semibold leading-none tracking-[-0.04em]', i === 0 ? 'text-bg/30' : 'text-fg-3']} aria-hidden="true">0{i + 1}</p>
+          <p class:list={['font-display text-6xl font-semibold leading-none tracking-[-0.04em]', i === 0 ? 'text-bg/60' : 'text-fg-2/70']} aria-hidden="true">0{i + 1}</p>
           <h3 class="text-3xl font-semibold tracking-[-0.025em]">{L(s.title)}</h3>
           <p class:list={['max-w-[48ch] text-lg', i === 0 ? 'text-bg/75' : 'text-fg-2']}>{L(s.body)}</p>
           <a href={localizePath(s.href, lang)} class:list={['group mt-auto inline-flex items-center gap-2 font-semibold', i === 0 ? 'text-bg' : 'text-accent']}>
