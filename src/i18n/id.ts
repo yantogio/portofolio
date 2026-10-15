@@ -42,6 +42,8 @@ export const id = {
   'project.close': 'Tutup',
   'lightbox.zoom': 'Perbesar foto',
   'lightbox.original': 'Buka ukuran asli',
+  'lightbox.prev': 'Foto sebelumnya',
+  'lightbox.next': 'Foto berikutnya',
 
   'credentials.certificates': 'Sertifikasi',
   'credentials.education': 'Pendidikan',

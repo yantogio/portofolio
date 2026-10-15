@@ -34,7 +34,7 @@ Taruh foto di `src/assets/me/` dengan nama:
 
 Format `.jpg`, `.png`, atau `.webp` boleh, dan ukuran asli bebas karena situs mengompres otomatis. Untuk mengganti foto, timpa saja file dengan nama yang sama.
 
-Foto opsional untuk tiap bab Pengalaman: `src/assets/journey/2015.jpg`, `2018.jpg`, `2020.jpg`, `2022.jpg`, `2025.jpg`, `2026.jpg` (nama file = tahun bab).
+Foto opsional untuk tiap bab Pengalaman ada di `src/assets/journey/`. Nama file diawali tahun bab (`2025.jpg`, `2025 (2).jpg`, ...) atau ditaruh di folder per tahun (`journey/2025/`). Satu bab boleh punya banyak foto, yang tampil sebagai tumpukan bergantian tiap 5 detik. Detailnya ada di README folder tersebut.
 
 ### Ubah status "terbuka untuk kerja"
 

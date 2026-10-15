@@ -56,6 +56,7 @@ Navigasi pill melayang (v2 awal) ditolak pemilik karena menutupi konten. Penggan
 - Headline naik dari balik masker, berurutan.
 - Foto masuk dengan skala 1.06 → 1.
 - Baris keahlian membuka dengan transisi `grid-template-rows`.
+- Foto bab: bila lebih dari satu, ditumpuk miring (±5°) dan bergantian tiap 5 detik dengan transisi transform. Rotasi berhenti saat disorot, di luar layar, atau tab tidak aktif.
 - Reveal saat masuk viewport lewat IntersectionObserver.
 - Kartu project terangkat 4px saat hover dan ikon panahnya berubah amber.
 - Semua dimatikan saat `prefers-reduced-motion: reduce`.

@@ -63,7 +63,7 @@ The site SHALL launch with case studies for Project-web-HMTI, smart-wealth-monit
 - **THEN** a link to `https://github.com/yantogio` is shown for viewing all repositories
 
 ### Requirement: Image lightbox
-Every content photo on the site (hero portrait, Experience chapter photos, project covers, screenshot galleries, and build-log images) SHALL open in a full-screen lightbox when clicked. The lightbox SHALL show the image as large as fits the viewport, its caption, and a link to the original full-size file opening in a new tab. It SHALL close on Escape, on its close button, and on a click outside the image, returning focus to the photo that opened it. Modifier-clicks (Ctrl/Cmd/Shift) SHALL keep the browser's default behaviour.
+Every content photo on the site (hero portrait, Experience chapter photos, project covers, screenshot galleries, and build-log images) SHALL open in a full-screen lightbox when clicked. The lightbox SHALL show the image as large as fits the viewport, its caption, and a link to the original full-size file opening in a new tab. Photos sharing a lightbox group (such as one chapter's photo stack) SHALL be browsable with previous/next buttons and the arrow keys, with a position counter. It SHALL close on Escape, on its close button, and on a click outside the image, returning focus to the photo that opened it (or to the stack's front photo). Modifier-clicks (Ctrl/Cmd/Shift) SHALL keep the browser's default behaviour.
 
 #### Scenario: Open a photo
 - **WHEN** a visitor clicks a screenshot in a project gallery

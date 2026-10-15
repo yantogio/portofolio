@@ -44,6 +44,8 @@ export const en: Dict = {
   'project.close': 'Close',
   'lightbox.zoom': 'Enlarge photo',
   'lightbox.original': 'Open full size',
+  'lightbox.prev': 'Previous photo',
+  'lightbox.next': 'Next photo',
 
   'credentials.certificates': 'Certifications',
   'credentials.education': 'Education',

@@ -1,0 +1,97 @@
+---
+/**
+ * Foto bab Pengalaman. Satu foto tampil biasa; beberapa foto tampil sebagai tumpukan
+ * yang bergantian tiap 5 detik. Semua foto bisa dibuka di lightbox (dengan navigasi ‹ ›).
+ */
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import Zoomable from './Zoomable.astro';
+
+interface Props {
+  photos: ImageMetadata[];
+  alt: string;
+  group: string;
+  class?: string;
+}
+const { photos, alt, group, class: cls } = Astro.props;
+const many = photos.length > 1;
+---
+{photos.length > 0 && (
+  <div class:list={['photo-stack relative aspect-[4/5]', cls]} data-stack={many ? '' : undefined}>
+    {photos.map((p, i) => {
+      const label = many ? `${alt} (${i + 1}/${photos.length})` : alt;
+      return (
+        <div class="stack-card absolute inset-0" data-pos={i} aria-hidden={i > 0 ? 'true' : undefined}>
+          <Zoomable src={p} alt={label} group={group} class="size-full overflow-hidden rounded-2xl" tabindex={i > 0 ? -1 : undefined}>
+            <Image src={p} alt={label} widths={[240, 400, 560]} sizes="(min-width: 768px) 176px, 160px" class="size-full object-cover" />
+          </Zoomable>
+        </div>
+      );
+    })}
+  </div>
+)}
+
+<script>
+  const INTERVAL = 5000;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  document.querySelectorAll<HTMLElement>('[data-stack]').forEach((stack) => {
+    const cards = Array.from(stack.querySelectorAll<HTMLElement>('.stack-card'));
+    let order = cards.map((_, i) => i); // order[0] = kartu paling depan
+    let visible = false;
+    let hovered = false;
+    let timer: number | undefined;
+
+    const apply = () => {
+      order.forEach((cardIndex, pos) => {
+        const card = cards[cardIndex];
+        card.dataset.pos = String(pos);
+        const front = pos === 0;
+        card.toggleAttribute('aria-hidden', !front);
+        const link = card.querySelector<HTMLElement>('a');
+        if (link) link.tabIndex = front ? 0 : -1;
+      });
+    };
+
+    const next = () => {
+      order = [...order.slice(1), order[0]];
+      apply();
+    };
+
+    const sync = () => {
+      const run = visible && !hovered && !document.hidden && !reduce.matches;
+      if (run && timer === undefined) timer = window.setInterval(next, INTERVAL);
+      if (!run && timer !== undefined) {
+        clearInterval(timer);
+        timer = undefined;
+      }
+    };
+
+    stack.addEventListener('pointerenter', () => { hovered = true; sync(); });
+    stack.addEventListener('pointerleave', () => { hovered = false; sync(); });
+    stack.addEventListener('focusin', () => { hovered = true; sync(); });
+    stack.addEventListener('focusout', () => { hovered = false; sync(); });
+    document.addEventListener('visibilitychange', sync);
+    reduce.addEventListener('change', sync);
+    new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; sync(); }, { threshold: 0.4 }).observe(stack);
+
+    apply();
+  });
+</script>
+
+<style>
+  .stack-card {
+    transform-origin: 50% 85%;
+    transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), filter 0.9s;
+  }
+  .stack-card[data-pos="0"] { z-index: 3; }
+  .stack-card[data-pos="1"] { z-index: 2; transform: translate(10px, 6px) rotate(5deg) scale(0.95); filter: brightness(0.6); }
+  .stack-card[data-pos="2"] { z-index: 1; transform: translate(-8px, 10px) rotate(-5deg) scale(0.9); filter: brightness(0.45); }
+  .stack-card[data-pos]:not([data-pos="0"]):not([data-pos="1"]):not([data-pos="2"]) { z-index: 0; opacity: 0; transform: scale(0.85); }
+  .stack-card:not([data-pos="0"]) { pointer-events: none; }
+  /* Satu foto: tanpa efek tumpukan. */
+  .photo-stack:not([data-stack]) .stack-card { transform: none; filter: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .stack-card { transition: none; }
+  }
+</style>

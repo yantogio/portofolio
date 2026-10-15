@@ -25,17 +25,31 @@ const me = import.meta.glob<{ default: ImageMetadata }>('/src/assets/me/*.{png,j
 }) as ImgModules;
 
 const journeyPhotos = import.meta.glob<{ default: ImageMetadata }>(
-  '/src/assets/journey/*.{png,jpg,jpeg,webp,avif}',
+  ['/src/assets/journey/*.{png,jpg,jpeg,webp,avif}', '/src/assets/journey/*/*.{png,jpg,jpeg,webp,avif}'],
   { eager: true },
 ) as ImgModules;
 
-/** Foto opsional untuk bab perjalanan: src/assets/journey/<tahun>.jpg */
-export function getJourneyPhoto(year: string): ImageMetadata | undefined {
-  const key = Object.keys(journeyPhotos).find((p) => fileName(p).replace(/\.[^.]+$/, '') === year);
-  return key ? journeyPhotos[key].default : undefined;
+/**
+ * Foto opsional untuk bab pengalaman, urut nama file. Dua cara memberi nama:
+ * - file di journey/ yang diawali tahun: "2025.jpg", "2025 (2).jpg", "2025-3.jpg"
+ * - semua file di dalam folder journey/<tahun>/
+ */
+export function getJourneyPhotos(year: string): ImageMetadata[] {
+  const prefix = '/src/assets/journey/';
+  const startsWithYear = new RegExp(`^${year}(?:$|[\\s_.(-])`);
+  return Object.keys(journeyPhotos)
+    .filter((p) => {
+      const rel = p.slice(prefix.length);
+      const parts = rel.split('/');
+      if (parts.length === 2) return parts[0] === year;
+      return startsWithYear.test(rel.replace(/\.[^.]+$/, ''));
+    })
+    // Urut tanpa ekstensi agar "2025.jpg" tetap sebelum "2025 (2).jpg".
+    .sort((a, b) => a.replace(/\.[^.]+$/, '').localeCompare(b.replace(/\.[^.]+$/, ''), undefined, { numeric: true }))
+    .map((p) => journeyPhotos[p].default);
 }
 
-const certFiles =import.meta.glob<string>('/src/content/certificates/*.pdf', {
+const certFiles = import.meta.glob<string>('/src/content/certificates/*.pdf', {
   eager: true,
   query: '?url',
   import: 'default',

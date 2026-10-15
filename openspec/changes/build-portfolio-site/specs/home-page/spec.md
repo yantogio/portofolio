@@ -41,11 +41,23 @@ The Experience section SHALL present the career path in chronological order: SMK
 - **THEN** it appears in the 2026 chapter after rebuild
 
 ### Requirement: Optional chapter photos
-Each Experience chapter SHALL display a photo from `src/assets/journey/<year>.<ext>` when such a file exists, and SHALL render without an image otherwise.
+Each Experience chapter SHALL display every photo found for its year, either files in `src/assets/journey/` whose name starts with the year (`2025.jpg`, `2025 (2).jpg`, `2025-3.jpg`) or any file in `src/assets/journey/<year>/`, ordered by filename with the bare year first. A chapter with no photos SHALL render without an image. A single photo SHALL render as a plain framed image. Two or more photos SHALL render as a stack that brings the next photo to the front every 5 seconds; the rotation SHALL pause while hovered or focused, while the stack is off-screen, while the tab is hidden, and SHALL not run when the visitor prefers reduced motion. Only the front photo SHALL be focusable, and opening it SHALL show all photos of that chapter in the lightbox with previous/next navigation.
 
 #### Scenario: Add a chapter photo
 - **WHEN** the owner adds `src/assets/journey/2015.jpg` and rebuilds
 - **THEN** the 2015 chapter shows that photo, optimized, and it opens in the lightbox when clicked
+
+#### Scenario: Several photos in one chapter
+- **WHEN** `2025.jpg` and `2025 (2).jpg` exist
+- **THEN** the 2025 chapter shows a stack with `2025.jpg` in front, and after 5 seconds `2025 (2).jpg` comes to the front
+
+#### Scenario: Pause on hover
+- **WHEN** a visitor hovers the stack
+- **THEN** the front photo does not change until the pointer leaves
+
+#### Scenario: Browse in the lightbox
+- **WHEN** a visitor opens the front photo of a stack and presses the right arrow key
+- **THEN** the lightbox shows the next photo of the same chapter and a "2 / 2" style counter
 
 ### Requirement: How I Work section
 The How I Work section SHALL describe four stages (Specification, Development, Testing, Release) as stacked cards. Each stage SHALL link to concrete evidence from the projects or the build log.

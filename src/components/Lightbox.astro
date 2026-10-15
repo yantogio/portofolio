@@ -1,5 +1,8 @@
 ---
-/** Satu lightbox untuk seluruh situs. Membuka setiap tautan ber-atribut `data-lightbox`. */
+/**
+ * Satu lightbox untuk seluruh situs. Membuka setiap tautan ber-atribut `data-lightbox`.
+ * Tautan dengan `data-lightbox-group` yang sama bisa digeser dengan ‹ › atau tombol panah.
+ */
 import Icon from './Icon.astro';
 import { getLang, t } from '@/i18n';
 
@@ -7,13 +10,14 @@ const lang = getLang(Astro.url);
 ---
 <dialog class="lightbox" aria-label={t(lang, 'lightbox.zoom')} data-lightbox-dialog>
   <div class="flex h-full flex-col">
-    <div class="flex items-center justify-end p-4 md:p-6">
+    <div class="flex items-center justify-between gap-4 p-4 md:p-6">
+      <p class="text-sm tabular-nums text-fg-2" aria-live="polite" data-lightbox-count></p>
       <button type="button" class="flex size-12 items-center justify-center rounded-full border border-line text-fg transition-colors hover:border-fg" data-lightbox-close>
         <span class="sr-only">{t(lang, 'project.close')}</span>
         <Icon name="x" class="text-xl" />
       </button>
     </div>
-    <figure class="flex min-h-0 flex-1 flex-col items-center justify-center gap-4 px-4 pb-6 md:px-10 md:pb-10" data-lightbox-stage>
+    <figure class="relative flex min-h-0 flex-1 flex-col items-center justify-center gap-4 px-4 pb-6 md:px-24 md:pb-10" data-lightbox-stage>
       <img alt="" class="lightbox-img min-h-0 max-w-full flex-1 rounded-2xl object-contain" data-lightbox-img />
       <figcaption class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-center text-sm text-fg-2">
         <span data-lightbox-caption></span>
@@ -21,6 +25,12 @@ const lang = getLang(Astro.url);
           {t(lang, 'lightbox.original')}<Icon name="arrow-up-right" /><span class="sr-only"> {t(lang, 'project.external')}</span>
         </a>
       </figcaption>
+      <button type="button" class="lb-nav left-3 md:left-6" data-lightbox-prev>
+        <span class="sr-only">{t(lang, 'lightbox.prev')}</span><Icon name="caret-left" class="text-xl" />
+      </button>
+      <button type="button" class="lb-nav right-3 md:right-6" data-lightbox-next>
+        <span class="sr-only">{t(lang, 'lightbox.next')}</span><Icon name="caret-right" class="text-xl" />
+      </button>
     </figure>
   </div>
 </dialog>
@@ -29,24 +39,53 @@ const lang = getLang(Astro.url);
   const dialog = document.querySelector<HTMLDialogElement>('[data-lightbox-dialog]');
   const img = dialog?.querySelector<HTMLImageElement>('[data-lightbox-img]');
   const caption = dialog?.querySelector<HTMLElement>('[data-lightbox-caption]');
+  const count = dialog?.querySelector<HTMLElement>('[data-lightbox-count]');
   const original = dialog?.querySelector<HTMLAnchorElement>('[data-lightbox-original]');
+  const prevBtn = dialog?.querySelector<HTMLButtonElement>('[data-lightbox-prev]');
+  const nextBtn = dialog?.querySelector<HTMLButtonElement>('[data-lightbox-next]');
+
+  let items: HTMLAnchorElement[] = [];
+  let index = 0;
   let opener: HTMLElement | null = null;
 
-  if (dialog && img && caption && original && typeof dialog.showModal === 'function') {
+  if (dialog && img && caption && count && original && prevBtn && nextBtn && typeof dialog.showModal === 'function') {
+    const show = (i: number) => {
+      index = (i + items.length) % items.length;
+      const a = items[index];
+      const text = a.dataset.caption ?? a.querySelector('img')?.alt ?? '';
+      img.src = a.href;
+      img.alt = text;
+      caption.textContent = text;
+      original.href = a.dataset.original ?? a.href;
+      const multi = items.length > 1;
+      count.textContent = multi ? `${index + 1} / ${items.length}` : '';
+      prevBtn.hidden = !multi;
+      nextBtn.hidden = !multi;
+    };
+
     document.querySelectorAll<HTMLAnchorElement>('a[data-lightbox]').forEach((a) => {
       a.addEventListener('click', (e) => {
         if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; // biarkan buka di tab baru
         e.preventDefault();
         opener = a;
-        const text = a.dataset.caption ?? a.querySelector('img')?.alt ?? '';
-        img.src = a.href;
-        img.alt = text;
-        caption.textContent = text;
-        original.href = a.dataset.original ?? a.href;
+        const group = a.dataset.lightboxGroup;
+        items = group
+          ? Array.from(document.querySelectorAll<HTMLAnchorElement>(`a[data-lightbox][data-lightbox-group="${CSS.escape(group)}"]`))
+          : [a];
+        show(Math.max(0, items.indexOf(a)));
         dialog.showModal();
         document.documentElement.style.overflow = 'hidden';
       });
     });
+
+    prevBtn.addEventListener('click', () => show(index - 1));
+    nextBtn.addEventListener('click', () => show(index + 1));
+    dialog.addEventListener('keydown', (e) => {
+      if (items.length < 2) return;
+      if (e.key === 'ArrowLeft') { e.preventDefault(); show(index - 1); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); show(index + 1); }
+    });
+
     dialog.querySelector('[data-lightbox-close]')?.addEventListener('click', () => dialog.close());
     // Klik di luar foto menutup lightbox.
     dialog.addEventListener('click', (e) => {
@@ -56,7 +95,9 @@ const lang = getLang(Astro.url);
     dialog.addEventListener('close', () => {
       document.documentElement.style.overflow = '';
       img.removeAttribute('src');
-      opener?.focus();
+      // Fokus kembali ke foto pembuka, atau ke foto depan tumpukan bila pembuka tidak lagi bisa difokus.
+      if (opener && opener.tabIndex >= 0) opener.focus();
+      else opener?.closest('[data-stack]')?.querySelector<HTMLElement>('.stack-card[data-pos="0"] a')?.focus();
     });
   }
 </script>
@@ -76,6 +117,23 @@ const lang = getLang(Astro.url);
   }
   .lightbox::backdrop { background: transparent; }
   .lightbox-img { width: auto; height: auto; max-height: 100%; }
+  .lb-nav {
+    position: absolute;
+    top: 50%;
+    display: flex;
+    width: 3rem;
+    height: 3rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 1px solid var(--color-line);
+    background: rgb(15 20 17 / 0.7);
+    color: var(--color-fg);
+    transform: translateY(-50%);
+    transition: border-color 0.2s, background-color 0.2s;
+  }
+  .lb-nav:hover { border-color: var(--color-fg); }
+  .lb-nav[hidden] { display: none; }
   @media (prefers-reduced-motion: no-preference) {
     .lightbox[open] { animation: lb-fade 0.3s ease-out; }
     .lightbox[open] .lightbox-img { animation: lb-zoom 0.5s cubic-bezier(0.16, 1, 0.3, 1); }

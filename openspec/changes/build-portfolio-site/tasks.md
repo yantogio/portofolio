@@ -89,3 +89,4 @@
 - [x] 10.11 Verifikasi ulang dengan Playwright: overflow 360-1440px, hero 1366×768, menu, lightbox, pengalih bahasa, fokus keyboard
 - [x] 10.12 Perbarui proposal, specs, design.md, design-direction.md, dan build-log agar sesuai v2
 - [x] 10.13 Hapus data pribadi literal dari specs/tasks dan bersihkan riwayat git sebelum push pertama
+- [x] 10.14 Dukung banyak foto per bab (`2025 (2).jpg` atau folder `journey/2025/`): tumpukan yang bergantian tiap 5 detik, lightbox dengan navigasi ‹ ›

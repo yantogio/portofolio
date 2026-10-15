@@ -3,13 +3,14 @@ import { Image } from 'astro:assets';
 import Icon from '@/components/Icon.astro';
 import ProjectCard from '@/components/ProjectCard.astro';
 import Zoomable from '@/components/Zoomable.astro';
+import PhotoStack from '@/components/PhotoStack.astro';
 import AvailabilityBadge from '@/components/AvailabilityBadge.astro';
 import CvButton from '@/components/CvButton.astro';
 import CertificateList from '@/components/CertificateList.astro';
 import { profile, type Lang } from '@/config/profile';
 import { hero, capabilities, journey, process, education, contact } from '@/content/home';
 import { getProjects, type Project } from '@/lib/projects';
-import { getPhoto, getJourneyPhoto } from '@/lib/media';
+import { getPhoto, getJourneyPhotos } from '@/lib/media';
 import { localizePath, t } from '@/i18n';
 
 interface Props { lang: Lang }
@@ -25,7 +26,7 @@ const placed = new Set(journey.steps.flatMap((s) => s.projects ?? []));
 const leftovers = featured.filter((p) => !placed.has(p.slug));
 const chapters = journey.steps.map((s, i) => ({
   ...s,
-  photo: getJourneyPhoto(s.year),
+  photos: getJourneyPhotos(s.year),
   items: [
     ...(s.projects ?? []).map((slug) => bySlug.get(slug)).filter((p): p is Project => !!p),
     ...(i === journey.steps.length - 1 ? leftovers : []),
@@ -155,11 +156,7 @@ const splitAccent = (line: { id: string; en: string; accent?: { id: string; en: 
                   <p class="mt-4 max-w-[52ch] text-lg leading-relaxed">{L(c.takeaway)}</p>
                 </div>
               </div>
-              {c.photo && (
-                <Zoomable src={c.photo} alt={`${L(c.title)}, ${c.place}`} class="hidden w-44 overflow-hidden rounded-2xl md:block">
-                  <Image src={c.photo} alt={`${L(c.title)}, ${c.place}`} widths={[240, 400]} sizes="200px" class="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover/zoom:scale-105" />
-                </Zoomable>
-              )}
+              <PhotoStack photos={c.photos} alt={`${L(c.title)}, ${c.place}`} group={`journey-${c.year}`} class="ml-17 w-40 md:ml-0 md:w-44" />
             </div>
 
             {c.items.length > 0 && (

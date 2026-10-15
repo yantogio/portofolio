@@ -12,8 +12,11 @@ interface Props {
   src: ImageMetadata;
   alt: string;
   class?: string;
+  /** Foto dengan grup yang sama bisa digeser di lightbox (‹ ›). */
+  group?: string;
+  tabindex?: number;
 }
-const { src, alt, class: cls } = Astro.props;
+const { src, alt, class: cls, group, tabindex } = Astro.props;
 const lang = getLang(Astro.url);
 // Versi besar untuk lightbox (maks. 2400 px, webp); file asli untuk "Buka ukuran asli".
 const large = await getImage({ src, width: Math.min(src.width, 2400), format: 'webp' });
@@ -23,6 +26,8 @@ const large = await getImage({ src, width: Math.min(src.width, 2400), format: 'w
   data-lightbox
   data-original={src.src}
   data-caption={alt}
+  data-lightbox-group={group}
+  tabindex={tabindex}
   class:list={['group/zoom relative block cursor-zoom-in', cls]}
   aria-label={`${t(lang, 'lightbox.zoom')}: ${alt}`}
 >
