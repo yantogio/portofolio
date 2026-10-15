@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   // Ganti ke https://yantogio.is-a.dev setelah domain aktif.
-  site: 'https://portfolio-yantogio.vercel.app',
+  site: 'https://portofolio-steel-beta-47.vercel.app',
   output: 'static',
   trailingSlash: 'ignore',
   i18n: {
