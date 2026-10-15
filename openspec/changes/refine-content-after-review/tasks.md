@@ -31,5 +31,5 @@
 
 - [x] 6.1 `astro check` dan `npm run build` (termasuk legacy CSS dan privasi) lolos
 - [x] 6.2 Playwright: hero maksimal 3 baris di 1366×768 (ID & EN), lima baris Keahlian membuka saat hover dan terbuka di 390px, tidak ada scroll horizontal di 360/1440
-- [ ] 6.3 Commit, push, lalu verifikasi di `https://yantogio.vercel.app`: canonical benar, CV terunduh, alamat lama dialihkan
+- [x] 6.3 Commit, push, lalu verifikasi di `https://yantogio.vercel.app`: canonical benar, CV terunduh, alamat lama dialihkan
 - [x] 6.4 Tambah catatan revisi ini ke halaman `/how-i-built-this` (ID & EN)
