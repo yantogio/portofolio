@@ -10,8 +10,8 @@ export const hero = {
     { id: 'Gionova.', en: 'Gionova.', accent: { id: '.', en: '.' } },
   ] as (L & { accent?: L })[],
   lede: {
-    id: 'Software Developer lulusan Teknik Informatika dengan 12 bulan pengalaman di PT Denso Manufacturing Indonesia. Berfokus pada REST API, automated test, dan pengembangan berbasis spesifikasi.',
-    en: 'Software developer with a degree in Informatics Engineering and twelve months at PT Denso Manufacturing Indonesia, focused on REST APIs, automated testing, and specification-driven development.',
+    id: 'Lulusan Teknik Informatika dengan 12 bulan magang sebagai Software Developer di PT Denso Manufacturing Indonesia. Membangun REST API dan aplikasi web yang teruji sejak awal.',
+    en: 'Informatics Engineering graduate with a 12-month Software Developer internship at PT Denso Manufacturing Indonesia. I build REST APIs and web apps that are tested from the start.',
   } as L,
   cta: { id: 'Lihat pengalaman', en: 'View Experience' } as L,
 };
@@ -26,7 +26,7 @@ export const capabilities = {
     {
       name: { id: 'Backend', en: 'Backend' } as L,
       stack: ['PHP', 'Laravel', 'CodeIgniter 3', 'NestJS', 'Spring Boot', 'Python', 'REST API'],
-      proof: { label: 'Airline Voucher Seats', note: { id: '98 test', en: '98 tests' } as L, href: '/projects/airline-voucher-seats' },
+      proof: { label: 'Vehicle Registry', note: { id: 'arsitektur berlapis', en: 'layered architecture' } as L, href: '/projects/vehicle-registry' },
     },
     {
       name: { id: 'Frontend', en: 'Frontend' } as L,
@@ -34,14 +34,19 @@ export const capabilities = {
       proof: { label: 'HMTI Organisation System', note: { id: 'skripsi, nilai A', en: 'thesis, graded A' } as L, href: '/projects/hmti-organisation-system' },
     },
     {
-      name: { id: 'Data & Otomasi', en: 'Data & Automation' } as L,
-      stack: ['SQL Server', 'MySQL', 'Power BI', 'Power Automate', 'Power Apps', 'Excel'],
-      proof: { label: 'PT Denso', note: { id: 'magang 12 bulan', en: '12-month internship' } as L, href: '/projects/denso-facility-reporting' },
+      name: { id: 'Database', en: 'Database' } as L,
+      stack: ['SQL Server', 'MySQL', 'SQLite', 'Prisma', 'Eloquent'],
+      proof: { label: 'Airline Voucher Seats', note: { id: 'tanpa voucher ganda', en: 'no duplicate vouchers' } as L, href: '/projects/airline-voucher-seats' },
     },
     {
-      name: { id: 'Testing & Kualitas', en: 'Testing & Quality' } as L,
-      stack: ['PHPUnit', 'GitHub Actions CI', 'OpenSpec', 'Prisma', 'Eloquent'],
+      name: { id: 'Testing & Tools', en: 'Testing & Tools' } as L,
+      stack: ['PHPUnit', 'GitHub Actions CI', 'OpenSpec', 'Git'],
       proof: { label: 'Smart Wealth Monitor', note: { id: '39 test + CI', en: '39 tests + CI' } as L, href: '/projects/smart-wealth-monitor' },
+    },
+    {
+      name: { id: 'Data & Otomasi', en: 'Data & Automation' } as L,
+      stack: ['Power BI', 'Power Automate', 'Power Apps', 'Excel'],
+      proof: { label: 'PT Denso', note: { id: 'magang 12 bulan', en: '12-month internship' } as L, href: '/projects/denso-facility-reporting' },
     },
   ],
 };
@@ -121,8 +126,8 @@ export const journey = {
       title: { id: 'Lulus, skripsi nilai A', en: 'Graduated, thesis graded A' } as L,
       place: 'Universitas Bani Saleh · IPK 3,58',
       takeaway: {
-        id: 'Lulus sidang skripsi dengan nilai A. Project berikut dikerjakan dengan spesifikasi tertulis (OpenSpec) dan automated test.',
-        en: 'Passed the thesis defence with an A. The projects below were built with written specifications (OpenSpec) and automated tests.',
+        id: 'Lulus sidang skripsi dengan nilai A. Project berikut dikerjakan dengan kebutuhan yang ditulis lebih dulu sebagai skenario yang bisa diuji, lalu dibuktikan dengan automated test.',
+        en: 'Passed the thesis defence with an A. The projects below were built by writing requirements first as testable scenarios, then proving them with automated tests.',
       } as L,
       projects: ['hmti-organisation-system', 'airline-voucher-seats', 'smart-wealth-monitor', 'vehicle-registry'],
     },
@@ -147,8 +152,8 @@ export const process = {
     {
       title: { id: 'Spesifikasi', en: 'Specification' } as L,
       body: {
-        id: 'Sebelum menulis kode, kebutuhan dirumuskan sebagai skenario WHEN … THEN dengan OpenSpec, sehingga pengembangan berbantuan AI tetap terarah.',
-        en: 'Before writing code, requirements are defined as WHEN … THEN scenarios with OpenSpec, keeping AI-assisted development on course.',
+        id: 'Kebutuhan ditulis dulu sebagai skenario yang bisa diuji, sebelum mulai coding. Saya memakai OpenSpec untuk ini, sehingga pengembangan berbantuan AI tetap terarah.',
+        en: 'Requirements are written first as testable scenarios, before any coding starts. I use OpenSpec for this, which keeps AI-assisted development on course.',
       } as L,
       evidence: { id: '16 change terarsip di skripsi HMTI', en: '16 archived changes in the HMTI thesis' } as L,
       href: '/projects/hmti-organisation-system',
@@ -165,10 +170,10 @@ export const process = {
     {
       title: { id: 'Pengujian', en: 'Testing' } as L,
       body: {
-        id: 'Setiap skenario di spesifikasi diterjemahkan menjadi test. Logika acak diuji berulang kali, misalnya 250 kali per tipe pesawat.',
-        en: 'Every scenario in the specification becomes a test. Randomised logic is tested repeatedly, for example 250 runs per aircraft type.',
+        id: 'Setiap skenario di spesifikasi diterjemahkan menjadi test otomatis, sehingga setiap perubahan bisa diperiksa ulang dalam hitungan detik.',
+        en: 'Every scenario in the specification becomes an automated test, so every change can be checked again in seconds.',
       } as L,
-      evidence: { id: '98 test, ±16.000 assertion', en: '98 tests, ~16,000 assertions' } as L,
+      evidence: { id: '98 test, termasuk aturan kursi yang diuji 250 kali per tipe pesawat', en: '98 tests, including seat rules tested 250 times per aircraft type' } as L,
       href: '/projects/airline-voucher-seats',
     },
     {

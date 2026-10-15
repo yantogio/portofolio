@@ -5,7 +5,7 @@ role: Sole developer
 period: 2026
 stack: [Laravel 13, React 19, Vite, SQLite, Eloquent]
 repo: https://github.com/yantogio/airline-voucher-seats
-highlights: ["98 tests", "~16,000 assertions", "Race-condition safe", "4 OpenSpec changes"]
+highlights: ["98 tests", "Tested 250× per aircraft type", "No duplicate vouchers", "4 OpenSpec changes"]
 featured: true
 order: 2
 diagram:

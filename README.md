@@ -89,12 +89,15 @@ Sertifikat yang PDF-nya belum ditaruh tetap tampil, hanya tanpa tombol "Lihat PD
 
 ### Ganti CV
 
-Taruh di `public/cv/`:
+CV publik dibuat dari `cv/CV-Gionova-ID.html`:
 
-- `CV-Gionova-ID.pdf` untuk situs Bahasa Indonesia
-- `CV-Gionova-EN.pdf` untuk situs English (opsional; tanpa file ini, situs English memakai CV Indonesia)
+1. Ubah isi `cv/CV-Gionova-ID.html`.
+2. Jalankan `npm run cv` (butuh Google Chrome). Hasilnya `public/cv/CV-Gionova-ID.pdf`.
+3. Commit dan push.
 
-Tombol "Unduh CV" muncul otomatis setelah file ada.
+Situs English memakai CV yang sama dengan keterangan "in Indonesian". Bila suatu saat ada `public/cv/CV-Gionova-EN.pdf`, situs English otomatis memakainya.
+
+CV ini versi publik tanpa nomor HP dan Data Pribadi. Build gagal bila data tersebut ditemukan di PDF.
 
 ### Ubah teks beranda
 

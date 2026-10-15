@@ -5,7 +5,7 @@ role: Pengembang tunggal
 period: 2026
 stack: [Laravel 13, React 19, Vite, SQLite, Eloquent]
 repo: https://github.com/yantogio/airline-voucher-seats
-highlights: ["98 test", "±16.000 assertion", "Aman terhadap race condition", "4 change OpenSpec"]
+highlights: ["98 test", "Diuji 250× per tipe pesawat", "Tanpa voucher ganda", "4 change OpenSpec"]
 featured: true
 order: 2
 diagram:

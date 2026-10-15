@@ -1,0 +1,159 @@
+<!doctype html>
+<!--
+  Sumber CV publik. Ubah isi di sini, lalu jalankan `npm run cv` untuk membuat ulang
+  public/cv/CV-Gionova-ID.pdf. JANGAN tambahkan data pribadi (nomor HP, tanggal lahir,
+  agama, status, alamat detail): build akan gagal bila ditemukan di PDF.
+-->
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>CV Muhammad Hariyanto Gionova</title>
+<meta name="author" content="Muhammad Hariyanto Gionova">
+<style>
+  @page { size: A4; margin: 16mm 17mm; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+    font-size: 10pt;
+    line-height: 1.45;
+    color: #1b1f1d;
+  }
+  h1 { font-size: 21pt; margin: 0; letter-spacing: -0.01em; }
+  .headline { margin: 2pt 0 6pt; font-size: 11pt; color: #3d4440; }
+  .contact { margin: 0; font-size: 9.5pt; color: #3d4440; }
+  .contact a { color: inherit; text-decoration: none; }
+  h2 {
+    font-size: 10.5pt;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 13pt 0 5pt;
+    padding-bottom: 3pt;
+    border-bottom: 1px solid #b9bdb7;
+    color: #7a4b0a;
+    break-after: avoid;
+  }
+  h3 { font-size: 10.5pt; margin: 0; }
+  .meta { display: flex; justify-content: space-between; gap: 12pt; }
+  .meta .date { color: #3d4440; white-space: nowrap; font-size: 9.5pt; }
+  .sub { margin: 0 0 2pt; color: #3d4440; font-size: 9.5pt; }
+  .item { margin-bottom: 7pt; break-inside: avoid; }
+  ul { margin: 2pt 0 0; padding-left: 13pt; }
+  li { margin-bottom: 1.5pt; }
+  p { margin: 0; }
+  .skills { margin: 0; }
+  .skills div { margin-bottom: 2pt; }
+  .skills b { display: inline-block; min-width: 110pt; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Muhammad Hariyanto Gionova</h1>
+  <p class="headline">Software Developer | PHP, Laravel, Vue.js, NestJS, SQL</p>
+  <p class="contact">
+    Bekasi, Indonesia &nbsp;|&nbsp;
+    <a href="mailto:muhhariyantogionova@gmail.com">muhhariyantogionova@gmail.com</a> &nbsp;|&nbsp;
+    <a href="https://linkedin.com/in/muhammad-hariyanto-gionova-586298422">linkedin.com/in/muhammad-hariyanto-gionova-586298422</a> &nbsp;|&nbsp;
+    <a href="https://github.com/yantogio">github.com/yantogio</a> &nbsp;|&nbsp;
+    <a href="https://yantogio.vercel.app">yantogio.vercel.app</a>
+  </p>
+</header>
+
+<h2>Ringkasan Profesional</h2>
+<p>Lulusan S1 Teknik Informatika (IPK 3,58) dengan 12 bulan pengalaman magang Software Developer di PT Denso Manufacturing Indonesia. Membangun sistem pelaporan keluhan fasilitas yang dapat diakses seluruh karyawan dengan mengintegrasikan Microsoft Forms, Power Automate, Python, SQL Server, dan PHP CodeIgniter 3 di tengah kebijakan keamanan TI korporat yang ketat. Skripsi berupa aplikasi web manajemen organisasi (Vue 3, NestJS, Prisma) yang di-deploy dan dipakai pengurus HMTI. Terbiasa menulis REST API, automated test, dan dokumentasi teknis. Terbuka untuk peran Software Developer maupun Data Analyst.</p>
+
+<h2>Pengalaman Kerja</h2>
+<div class="item">
+  <div class="meta"><h3>Software Developer Intern, PT Denso Manufacturing Indonesia</h3><span class="date">Jan 2025 - Des 2025</span></div>
+  <ul>
+    <li>Merancang dan membangun sistem pelaporan keluhan fasilitas end-to-end yang memungkinkan seluruh karyawan melapor ke tim Facility: Microsoft Forms, Power Automate, OneDrive, skrip Python (ETL), SQL Server, hingga aplikasi web monitoring PHP CodeIgniter 3.</li>
+    <li>Menembus kendala kebijakan keamanan TI perusahaan yang ketat dengan merancang integrasi di atas layanan Microsoft 365 yang sudah diizinkan, melalui akun karyawan penanggung jawab proyek yang menyetujui implementasinya.</li>
+    <li>Membangun dashboard Power BI untuk memantau daily check sheet tim Facility, dengan alur data otomatis Microsoft Forms, Power Automate, dan Excel sehingga hasil inspeksi harian langsung tersaji dalam bentuk visual tanpa rekap manual.</li>
+    <li>Mengembangkan aplikasi pemindai barcode berbasis Power Apps dengan penyimpanan data Excel di Microsoft 365.</li>
+    <li>Terlibat dalam siklus SDLC, mulai dari pengumpulan kebutuhan pengguna hingga deployment.</li>
+  </ul>
+</div>
+<div class="item">
+  <div class="meta"><h3>Sales Marketing, Telkom IndiHome</h3><span class="date">2020 - 2022</span></div>
+  <ul><li>Memasarkan layanan internet kepada pelanggan baru dan existing melalui presentasi produk dan kunjungan langsung (door-to-door).</li></ul>
+</div>
+<div class="item">
+  <div class="meta"><h3>Staf Logistik, PT Karya Insan Sehati</h3><span class="date">2018 - 2020</span></div>
+  <ul><li>Mengatur pengiriman sesuai jadwal distribusi, memantau stok barang, dan menyusun laporan distribusi harian.</li></ul>
+</div>
+
+<h2>Proyek</h2>
+<div class="item">
+  <div class="meta"><h3>Sistem Informasi Organisasi Mahasiswa HMTI (Skripsi)</h3><span class="date">2026</span></div>
+  <p class="sub">Vue 3, NestJS, Prisma, SQLite, Google Drive API &nbsp;|&nbsp; github.com/yantogio/Project-web-HMTI</p>
+  <ul>
+    <li>Single Page Application dengan 5 modul (Anggota, Keuangan, Dokumentasi, Showcase, Profil) dan landing page publik tanpa login; penyimpanan dokumen terintegrasi Google Drive API.</li>
+    <li>Lulus uji black-box dan dipertahankan pada sidang skripsi (nilai A); di-deploy dan dipakai pengurus HMTI.</li>
+  </ul>
+</div>
+<div class="item">
+  <div class="meta"><h3>Smart Wealth Monitor</h3><span class="date">2026</span></div>
+  <p class="sub">Laravel 13, Blade, Tailwind CSS 4, Chart.js, SQLite &nbsp;|&nbsp; github.com/yantogio/smart-wealth-monitor</p>
+  <ul>
+    <li>Dashboard investasi saham IDX dan emas: deteksi harga diskon terhadap titik tertinggi 30 hari, simulator DCA, dan sinkronisasi harga dari 2 sumber API (Yahoo Finance, metalpriceapi).</li>
+    <li>39 automated test, CI dengan GitHub Actions, dan pengembangan berbasis spesifikasi (OpenSpec) untuk 10 kapabilitas sistem.</li>
+  </ul>
+</div>
+<div class="item">
+  <div class="meta"><h3>Airline Voucher Seat Assignment</h3><span class="date">2026</span></div>
+  <p class="sub">Laravel 13 REST API, React 19, SQLite &nbsp;|&nbsp; github.com/yantogio/airline-voucher-seats</p>
+  <ul>
+    <li>REST API penugasan kursi acak tanpa duplikasi; pencegahan voucher ganda di level database (unique constraint + HTTP 409) sehingga aman terhadap request bersamaan.</li>
+    <li>98 automated test (±16.000 assertion) mencakup aturan bisnis, matriks validasi, dan CORS.</li>
+  </ul>
+</div>
+<div class="item">
+  <div class="meta"><h3>Vehicle Registry</h3><span class="date">2026</span></div>
+  <p class="sub">Java 17, Spring Boot 3, Spring Data JPA, jQuery &nbsp;|&nbsp; github.com/yantogio/vehicle-registry</p>
+  <ul>
+    <li>Aplikasi CRUD dengan REST API, pencarian dan pagination server-side, validasi sisi server, serta penanganan error terpusat (Controller, Service, Repository).</li>
+  </ul>
+</div>
+
+<h2>Pendidikan</h2>
+<div class="item">
+  <div class="meta"><h3>S1 Teknik Informatika, Universitas Bani Saleh, Bekasi</h3><span class="date">2022 - 2026</span></div>
+  <ul>
+    <li>IPK 3,58 / 4,00. Lulus sidang skripsi Juli 2026 (nilai A).</li>
+    <li>Mata kuliah relevan (A): Uji Kualitas Software &amp; Testing, Analisis &amp; Spesifikasi Kebutuhan Software, Manajemen Projek TI, Aplikasi Basis Data, Keamanan Siber, Sistem Administrator; Data Mining dan Big Data (A-).</li>
+  </ul>
+</div>
+<div class="item">
+  <div class="meta"><h3>SMK Teknik Pemesinan, SMK Saraswati Salatiga</h3><span class="date">2015 - 2018</span></div>
+</div>
+
+<h2>Pengalaman Organisasi</h2>
+<div class="item">
+  <div class="meta"><h3>Bendahara, Himpunan Mahasiswa Teknik Informatika (HMTI) Universitas Bani Saleh</h3><span class="date">1 periode</span></div>
+  <ul><li>Bertanggung jawab atas pengelolaan dan pelaporan keuangan himpunan selama satu periode kepengurusan.</li></ul>
+</div>
+
+<h2>Sertifikasi</h2>
+<ul>
+  <li>Database Design, Oracle Academy (Mar 2026)</li>
+  <li>Certificate of Appreciation, Operator Teknis Pilkades Digital Kabupaten Bekasi, PT Bentang Inspirasi Teknologi (2026)</li>
+  <li>Java Fundamentals, Oracle Academy (Sep 2025)</li>
+  <li>Java Programming, Oracle Academy (Agu 2024)</li>
+  <li>Junior Network Administrator, Digital Talent Scholarship Kominfo (VSGA) (Feb 2024)</li>
+  <li>IT Essentials, Cisco Networking Academy (Feb 2023)</li>
+</ul>
+
+<h2>Keahlian Teknis</h2>
+<div class="skills">
+  <div><b>Backend</b> PHP (Laravel, CodeIgniter 3), Node.js (NestJS), Java (Spring Boot), Python, REST API</div>
+  <div><b>Frontend</b> Vue.js 3, React, JavaScript, HTML, CSS, Tailwind CSS, Bootstrap</div>
+  <div><b>Database</b> SQL Server, MySQL, SQLite, Prisma ORM, Eloquent ORM</div>
+  <div><b>Testing &amp; Tools</b> PHPUnit, Git, GitHub Actions (CI), OpenSpec, Google Drive API</div>
+  <div><b>Data &amp; Otomasi</b> Power BI, Microsoft Excel (Advanced), Power Automate, Power Apps, SharePoint</div>
+  <div><b>Jaringan</b> IP Addressing, Routing &amp; Switching, Topologi Jaringan</div>
+  <div><b>Bahasa</b> Indonesia (native), Inggris (percakapan aktif)</div>
+</div>
+
+</body>
+</html>
