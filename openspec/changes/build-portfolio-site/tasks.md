@@ -64,8 +64,8 @@
 
 - [x] 8.1 Pandu Yanto membuat repo GitHub dan push (cek tidak ada secret di repo)
 - [x] 8.2 Pandu Yanto daftar Vercel ("Continue with GitHub"), import repo, deploy preview
-- [ ] 8.3 Aktifkan Web Analytics di dashboard Vercel; pastikan tidak ada UI statistik di situs
-- [ ] 8.4 Jalankan Lighthouse mobile di URL produksi; semua kategori ≥ 90
+- [x] 8.3 Aktifkan Web Analytics di dashboard Vercel; pastikan tidak ada UI statistik di situs
+- [x] 8.4 Jalankan Lighthouse mobile di URL produksi; semua kategori ≥ 90
 - [ ] 8.5 Siapkan file `domains/yantogio.json` dan pandu Yanto membuat PR ke `is-a-dev/register`
 - [ ] 8.6 Setelah PR di-merge, tambahkan domain di Vercel, update `site` di `astro.config`, verifikasi HTTPS
 
