@@ -91,6 +91,18 @@ Header ikut tergulir. Tombol menu bundar `fixed` muncul setelah header keluar da
 ### 6c. Lightbox global
 Satu komponen `Lightbox` di layout menangani semua `a[data-lightbox]`. Komponen `Zoomable` membungkus gambar mana pun dan membuat versi besar (maks. 2400 px, webp) lewat `getImage`, sementara file asli ditautkan sebagai "Buka ukuran asli". Klik dengan Ctrl/Cmd tetap membuka tab baru.
 
+### 6d. Kompatibilitas browser lama lewat postbuild
+Tailwind v4 membungkus hampir semua gaya dalam `@layer` dan menulis breakpoint sebagai `(width>=768px)`. Chrome sebelum 99 (dan WebView bawaan aplikasi yang sudah usang) mengabaikan `@layer` sepenuhnya, sehingga halaman tampil sebagai HTML polos. Ini baru ketahuan setelah deploy, dari HP pemilik.
+
+`scripts/legacy-css.mjs` dijalankan di `postbuild`, sebelum pemeriksaan privasi:
+- `@csstools/postcss-cascade-layers` menghapus `@layer` dan menjaga urutan prioritas lewat specificity. Setiap file CSS diberi deklarasi urutan layer yang sama. Tanpa itu, file gaya komponen tanpa `@layer` (mis. diagram) kalah oleh reset Tailwind dari file lain, sesuatu yang sempat terlihat di perbandingan piksel.
+- `@csstools/postcss-media-minmax` mengubah `(width>=…)` menjadi `(min-width:…)`.
+- Nama file CSS diganti sesuai hash isi baru, lalu semua rujukan diperbarui, karena `/_astro/*` di-cache `immutable` selama setahun.
+- `build.inlineStylesheets: 'never'` agar semua CSS berupa file yang bisa diproses.
+
+Verifikasi: perbandingan piksel full-page terhadap build sebelumnya identik di 390px; selisih di 1440px < 0,1% dan hanya berasal dari waktu animasi, dengan computed style yang sama.
+- *Alternatif ditolak:* turun ke Tailwind v3 (perlu menulis ulang konfigurasi dan kelas), atau mengabaikan browser lama (pemilik sendiri memakainya).
+
 ### 7. Deploy: GitHub → Vercel Hobby, domain is-a.dev
 - Repo publik `yantogio/portfolio` (nama final ditentukan saat setup). Vercel mendeteksi Astro otomatis, tanpa adapter karena output statis.
 - `@vercel/analytics` (komponen Astro `<Analytics />`) di layout. Tanpa cookie dan tanpa UI publik. Data hanya ada di tab Analytics dashboard Vercel.
@@ -103,6 +115,7 @@ Claude membaca README dan `openspec/` tiap repo (via GitHub API atau clone ke di
 ## Risks / Trade-offs
 
 - **[Skill image-to-code mengasumsikan bisa membuat gambar mockup sendiri]** → Terjadi: di versi pertama tidak ada alat generasi gambar, sehingga desain langsung dikodekan. Di versi kedua, Canva generate-image tersedia dan menghasilkan 4 dari 7 gambar section sebelum kuota kredit habis. Pratinjau yang dikembalikan hanya 199×112 px, jadi yang diekstrak adalah komposisi, palet, dan hierarki. Tiga section sisanya dirancang mengikuti sistem yang sama.
+- **[Browser lama tidak mengenal fitur CSS modern]** → Terjadi setelah deploy (halaman polos di HP pemilik). Ditangani di postbuild (lihat keputusan 6d). Sisa risiko: properti `translate`/`scale` individual dan unit `dvh` tetap diabaikan Chrome < 104/108, sehingga efek hover kecil dan tinggi minimum hero hilang, tetapi tata letak dan warna tetap utuh.
 - **[Data pribadi tertulis literal di dokumen repo]** → Ditemukan saat revisi: scenario privasi dan task 7.4 sempat memuat data CV secara literal. Keduanya diganti dengan deskripsi pola, dan riwayat git dibersihkan sebelum push pertama. `check-privacy.mjs` sengaja hanya memakai pola umum.
 - **[Approval is-a.dev bisa lama atau ditolak]** → Situs tetap jalan di `*.vercel.app`. Domain bisa diganti nanti tanpa mengubah kode (cukup `site` di `astro.config`).
 - **[Isi case study keliru karena Yanto lupa detail]** → Semua klaim diambil dari repo. Yanto mereview, dan klaim yang tidak bisa diverifikasi dihapus.
@@ -114,11 +127,13 @@ Claude membaca README dan `openspec/` tiap repo (via GitHub API atau clone ke di
 
 ## Migration Plan
 
-Proyek baru, tidak ada migrasi. Urutan rilis: build lokal → push GitHub → import ke Vercel (preview) → review Yanto → production di `*.vercel.app` → PR is-a.dev → tambah domain di Vercel. Rollback dilakukan dengan "Promote" deployment sebelumnya di dashboard Vercel.
+Proyek baru, tidak ada migrasi. Yang sudah dijalankan: build lokal → riwayat git dibersihkan dari data pribadi → push ke GitHub → import ke Vercel → production di `portofolio-steel-beta-47.vercel.app` → Analytics aktif → Lighthouse mobile (beranda 97/100/100/100, halaman project 99/100/100/100). Setiap push ke `main` men-deploy otomatis. Rollback lewat "Promote" deployment sebelumnya di dashboard Vercel.
 
 ## Open Questions
 
 - ~~Nama repo~~ → `portfolio`.
 - ~~Cara menampilkan foto~~ → bingkai 24px di hero, bisa diklik ke lightbox; foto per bab opsional.
 - ~~CV versi EN~~ → belum dibutuhkan; situs EN otomatis memakai CV ID dengan keterangan bahasa.
-- Foto profil dan PDF sertifikat/CV belum ditaruh pemilik (task 9.2).
+- Foto profil, foto pengalaman, dan PDF sertifikat sudah ditaruh. **CV PDF belum ada**; tombol "Unduh CV" otomatis muncul begitu `public/cv/CV-Gionova-ID.pdf` ditaruh.
+- **Tindak lanjut di luar change ini:** pendaftaran `yantogio.is-a.dev`. is-a.dev melarang permintaan yang dibuat AI, jadi pemilik mengikuti docs.is-a.dev sendiri. Setelah PR di-merge: tambahkan domain di Vercel, ubah `site` di `astro.config.mjs`, verifikasi HTTPS.
+- Dua PDF sertifikat berukuran sekitar 15 MB; bisa dikompres agar lebih ringan di HP.

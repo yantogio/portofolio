@@ -61,6 +61,10 @@ Navigasi pill melayang (v2 awal) ditolak pemilik karena menutupi konten. Penggan
 - Kartu project terangkat 4px saat hover dan ikon panahnya berubah amber.
 - Semua dimatikan saat `prefers-reduced-motion: reduce`.
 
+## Catatan teknis
+
+Gaya dikompilasi ulang setelah build agar juga tampil di browser lama (lihat design.md, keputusan 6d). Desain di browser modern tidak berubah.
+
 ## Anti-slop
 
 Tanpa em-dash, tanpa gradien ungu, tanpa glassmorphism (navigasi memakai blur ringan di atas latar solid 90%), tanpa skill bar, tanpa grid logo, tanpa eyebrow bernomor, dan setiap angka berasal dari repo atau CV.

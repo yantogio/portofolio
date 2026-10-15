@@ -24,7 +24,7 @@
 - [x] 3.5 Susun case study Denso dari CV (`confidential: true`, diagram Forms → Power Automate → OneDrive → Python ETL → SQL Server → CI3, plus Power BI & Power Apps)
 - [x] 3.6 Terjemahkan kelima case study ke `en.md`
 - [x] 3.7 Tulis copy homepage ID + EN (hero, journey 6 langkah, cara kerja, kontak) tanpa frasa generik
-- [ ] 3.8 Review oleh Yanto: koreksi fakta dan setujui teks ID & EN
+- [x] 3.8 Review oleh Yanto: koreksi fakta dan setujui teks ID & EN (teks beranda ditulis ulang atas permintaan pemilik, lihat 10.6)
 
 ## 4. Arah desain (design-taste-frontend)
 
@@ -66,13 +66,13 @@
 - [x] 8.2 Pandu Yanto daftar Vercel ("Continue with GitHub"), import repo, deploy preview
 - [x] 8.3 Aktifkan Web Analytics di dashboard Vercel; pastikan tidak ada UI statistik di situs
 - [x] 8.4 Jalankan Lighthouse mobile di URL produksi; semua kategori ≥ 90
-- [ ] 8.5 Siapkan file `domains/yantogio.json` dan pandu Yanto membuat PR ke `is-a-dev/register`
-- [ ] 8.6 Setelah PR di-merge, tambahkan domain di Vercel, update `site` di `astro.config`, verifikasi HTTPS
+- [x] 8.5 Domain is-a.dev: dipindah menjadi tindak lanjut di luar change ini (is-a.dev melarang permintaan buatan AI; pemilik mendaftar sendiri lewat docs.is-a.dev). Langkahnya dicatat di design.md › Open Questions
+- [x] 8.6 Set `site` ke URL produksi Vercel dan verifikasi HTTPS + canonical (`portofolio-steel-beta-47.vercel.app`)
 
 ## 9. Serah terima
 
 - [x] 9.1 Tulis `README.md` repo: cara menambah project, mengganti foto, menambah sertifikat, mengganti CV, dan mengubah status open-to-work (dalam Bahasa Indonesia)
-- [ ] 9.2 Yanto menaruh foto, PDF sertifikat, dan PDF CV; rebuild dan cek akhir
+- [x] 9.2 Yanto menaruh foto profil, 7 foto pengalaman, dan 6 PDF sertifikat; rebuild dan cek akhir. CV PDF menyusul (tombol muncul otomatis)
 
 ## 10. Revisi desain v2 (setelah review pemilik)
 
@@ -90,3 +90,11 @@
 - [x] 10.12 Perbarui proposal, specs, design.md, design-direction.md, dan build-log agar sesuai v2
 - [x] 10.13 Hapus data pribadi literal dari specs/tasks dan bersihkan riwayat git sebelum push pertama
 - [x] 10.14 Dukung banyak foto per bab (`2025 (2).jpg` atau folder `journey/2025/`): tumpukan yang bergantian tiap 5 detik, lightbox dengan navigasi ‹ ›
+
+## 11. Pasca-deploy
+
+- [x] 11.1 Hapus kutipan hmti.my.id dan ubah alamat situs ke URL produksi
+- [x] 11.2 Lighthouse mobile di produksi; perbaiki kontras angka kartu dan nama aksesibel link bahasa (Accessibility 96 → 100)
+- [x] 11.3 Diagnosis halaman polos di HP pemilik: `@layer` dan media query `width>=` tidak dikenal browser lama
+- [x] 11.4 `scripts/legacy-css.mjs` di postbuild: hapus `@layer` dengan urutan layer bersama, ubah media range ke `min-width`, ganti nama file CSS agar cache lama tidak terpakai
+- [x] 11.5 Verifikasi dengan perbandingan piksel terhadap build sebelumnya (identik di 390px) dan konfirmasi CSS produksi tanpa `@layer`
