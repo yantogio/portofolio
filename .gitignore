@@ -21,3 +21,7 @@ Thumbs.db
 # playwright
 .playwright-cli/
 test-results/
+
+# pengaturan lokal Claude Code (izin perintah, path komputer)
+.claude/settings.json
+.claude/settings.local.json
