@@ -1,0 +1,18 @@
+---
+import Icon from './Icon.astro';
+import { getCv } from '@/lib/media';
+import { t } from '@/i18n';
+import type { Lang } from '@/config/profile';
+
+interface Props { lang: Lang; variant?: 'primary' | 'ghost' }
+const { lang, variant = 'ghost' } = Astro.props;
+const cv = getCv(lang);
+const otherLang = cv && cv.lang !== lang;
+---
+{cv && (
+  <a href={cv.href} download class:list={['btn group', variant === 'primary' ? 'btn-primary' : 'btn-ghost']}>
+    <Icon name="download-simple" />
+    {t(lang, 'cv.download')}
+    {otherLang && <span class="font-normal opacity-80">{t(lang, 'cv.inLanguage')}</span>}
+  </a>
+)}

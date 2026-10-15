@@ -1,0 +1,245 @@
+@import "tailwindcss";
+@import "@fontsource-variable/bricolage-grotesque/opsz.css";
+@import "@fontsource-variable/hanken-grotesk";
+@import "@fontsource-variable/jetbrains-mono";
+
+/*
+ * Tema "malam yang hangat": hitam kehijauan, teks warna tulang, satu aksen amber.
+ * Satu tema tetap (keputusan pemilik). Lihat design-direction.md.
+ *
+ * Aturan radius: kartu & gambar 24px (rounded-3xl), node diagram 12px (rounded-xl),
+ * tombol & penanda selalu pill (rounded-full).
+ */
+@theme {
+  --color-bg: #0f1411;
+  --color-surface: #161d19;
+  --color-surface-2: #1d2621;
+  --color-fg: #ece6da;
+  --color-fg-2: #a8a69c;
+  --color-fg-3: #6c7068;
+  --color-line: rgb(236 230 218 / 0.12);
+  --color-accent: #e9a23b;
+
+  --font-display: "Bricolage Grotesque Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Hanken Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, "SFMono-Regular", monospace;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 6rem;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+  }
+  a, button, summary { touch-action: manipulation; }
+  body {
+    -webkit-tap-highlight-color: transparent;
+    background: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  /* Butiran film halus: lapisan tetap, tidak ikut digulir, tidak menangkap klik. */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    opacity: 0.06;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  ::selection { background: var(--color-accent); color: var(--color-bg); }
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; }
+  p { text-wrap: pretty; }
+}
+
+@layer components {
+  .wrap {
+    width: 100%;
+    max-width: 1280px;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 768px) { .wrap { padding-inline: 2.5rem; } }
+
+  .display {
+    font-family: var(--font-display);
+    font-size: clamp(2.6rem, 6.4vw, 5.6rem);
+    font-weight: 600;
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    word-spacing: 0.04em;
+    font-variation-settings: "opsz" 96;
+  }
+  /* Nama di hero: dua baris utuh di desktop. */
+  .hero-name { font-size: clamp(2.4rem, 4.9vw, 4.6rem); }
+  @media (min-width: 1024px) { .hero-name .line-mask > span { white-space: nowrap; } }
+  .h2 {
+    font-family: var(--font-display);
+    font-size: clamp(2.1rem, 4.4vw, 3.6rem);
+    font-weight: 650;
+    line-height: 1.04;
+    letter-spacing: -0.028em;
+    font-variation-settings: "opsz" 72;
+  }
+  .kicker {
+    font-size: 0.875rem;
+    color: var(--color-fg-2);
+    letter-spacing: 0.01em;
+  }
+
+  /* Tombol: selalu pill. */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.95rem 1.5rem;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1;
+    white-space: nowrap;
+    transition: transform 0.35s var(--ease-out-expo), background-color 0.25s, color 0.25s, border-color 0.25s;
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--color-accent); color: var(--color-bg); }
+  .btn-primary:hover { background: var(--color-fg); }
+  .btn-ghost { border: 1px solid var(--color-line); color: var(--color-fg); }
+  .btn-ghost:hover { border-color: var(--color-fg); }
+
+  .link {
+    color: var(--color-fg);
+    text-decoration: underline;
+    text-decoration-color: var(--color-fg-3);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+    transition: text-decoration-color 0.2s, color 0.2s;
+  }
+  .link:hover { color: var(--color-accent); text-decoration-color: var(--color-accent); }
+
+  .icon { width: 1.1em; height: 1.1em; flex: none; display: inline-block; }
+  .icon svg { width: 100%; height: 100%; fill: currentColor; }
+
+  .nudge { transition: transform 0.35s var(--ease-out-expo); }
+  .group:hover .nudge, .group:focus-visible .nudge { transform: translateX(4px); }
+  .group:hover .nudge-up, .group:focus-visible .nudge-up { transform: translate(3px, -3px); }
+
+  /* Baris headline: selalu blok, dengan masker untuk animasi naik. */
+  .line-mask { display: block; overflow: hidden; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+  .line-mask > span { display: block; }
+
+  /* Keahlian: baris membuka saat disorot (desktop), selalu terbuka di perangkat sentuh. */
+  .cap-detail { display: grid; grid-template-rows: 0fr; }
+  .cap-row:hover .cap-detail,
+  .cap-row:focus-within .cap-detail { grid-template-rows: 1fr; }
+  .cap-name { transition: color 0.4s, transform 0.6s var(--ease-out-expo); }
+  .cap-list:hover .cap-row:not(:hover) .cap-name { color: var(--color-fg-3); }
+  .cap-row:hover .cap-name, .cap-row:focus-within .cap-name { transform: translateX(0.75rem); }
+  .cap-icon { transition: transform 0.5s var(--ease-out-expo), background-color 0.3s, color 0.3s, border-color 0.3s; }
+  .cap-row:hover .cap-icon, .cap-row:focus-within .cap-icon {
+    transform: rotate(45deg);
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-bg);
+  }
+  @media (hover: none), (max-width: 767px) {
+    .cap-detail { grid-template-rows: 1fr; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .cap-detail { transition: grid-template-rows 0.6s var(--ease-out-expo); }
+  }
+
+  /* Angka tahun raksasa bergaris luar. */
+  .year-outline {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(4.5rem, 11vw, 10rem);
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgb(236 230 218 / 0.55);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Teks panjang case study. */
+  .prose-case { max-width: 68ch; color: var(--color-fg); }
+  .prose-case h2 {
+    font-size: 1.6rem;
+    font-weight: 650;
+    letter-spacing: -0.02em;
+    margin-top: 3rem;
+    margin-bottom: 0.75rem;
+  }
+  .prose-case h2:first-child { margin-top: 0; }
+  .prose-case p, .prose-case ul { margin-bottom: 1rem; }
+  .prose-case p, .prose-case li { color: rgb(236 230 218 / 0.86); }
+  .prose-case ul { padding-left: 1.25rem; list-style: disc; }
+  .prose-case li { margin-bottom: 0.6rem; padding-left: 0.25rem; }
+  .prose-case li::marker { color: var(--color-accent); }
+  .prose-case strong { font-weight: 700; color: var(--color-fg); }
+  .prose-case code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    background: var(--color-surface-2);
+    padding: 0.12em 0.4em;
+    border-radius: 6px;
+    overflow-wrap: anywhere;
+  }
+  .prose-case a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 3px; }
+}
+
+/* ---------- Motion. Semua dimatikan saat pengguna meminta reduced motion. ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  /* Baris headline naik dari balik masker. */
+  .line-mask > span {
+    transform: translateY(105%);
+    animation: line-up 1s var(--ease-out-expo) forwards;
+    animation-delay: calc(var(--i, 0) * 110ms + 120ms);
+  }
+  @keyframes line-up { to { transform: none; } }
+
+  .enter {
+    opacity: 0;
+    transform: translateY(14px);
+    animation: enter 0.9s var(--ease-out-expo) forwards;
+    animation-delay: calc(var(--i, 0) * 90ms + 300ms);
+  }
+  @keyframes enter { to { opacity: 1; transform: none; } }
+
+  .photo-in {
+    opacity: 0;
+    transform: scale(1.06);
+    animation: photo-in 1.4s var(--ease-out-expo) 0.2s forwards;
+  }
+  @keyframes photo-in { to { opacity: 1; transform: none; } }
+
+  .js .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.9s var(--ease-out-expo), transform 0.9s var(--ease-out-expo);
+    transition-delay: calc(var(--i, 0) * 80ms);
+  }
+  .js .reveal.is-in { opacity: 1; transform: none; }
+
+  .js .reveal .flow-node {
+    opacity: 0.2;
+    transition: opacity 0.6s var(--ease-out-expo), border-color 0.3s;
+    transition-delay: calc(var(--n, 0) * 140ms + 250ms);
+  }
+  .js .reveal.is-in .flow-node { opacity: 1; }
+
+}

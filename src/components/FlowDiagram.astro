@@ -1,0 +1,55 @@
+---
+/**
+ * Diagram arsitektur dari frontmatter `diagram.nodes`.
+ * Dirender sebagai daftar berurutan (bisa dibaca screen reader), bukan gambar.
+ */
+interface Node { label: string; note?: string }
+interface Props {
+  nodes: Node[];
+  caption?: string;
+  variant?: 'compact' | 'full';
+  label?: string;
+}
+const { nodes, caption, variant = 'full', label } = Astro.props;
+---
+{variant === 'compact' ? (
+  <ol class="flex flex-wrap items-center gap-x-2 gap-y-2.5 text-[0.8rem] leading-none" aria-label={label}>
+    {nodes.map((n, i) => (
+      <li class="flex items-center gap-2">
+        <span class="flow-node rounded-full border border-line bg-surface-2 px-3 py-2 font-mono text-fg" style={`--n:${i}`} translate="no">{n.label}</span>
+        {i < nodes.length - 1 && <span class="text-accent" aria-hidden="true">→</span>}
+      </li>
+    ))}
+  </ol>
+) : (
+  <figure class="w-full">
+    <ol class="flex flex-col gap-3 md:flex-row md:gap-0" aria-label={label}>
+      {nodes.map((n, i) => (
+        <li class="flow-step relative flex min-w-0 md:flex-1 md:items-stretch">
+          <div class="flow-node flex-1 rounded-xl border border-line bg-surface-2 p-4" style={`--n:${i}`}>
+            <p class="font-mono text-sm font-semibold leading-snug text-fg [overflow-wrap:anywhere]" translate="no">{n.label}</p>
+            {n.note && <p class="mt-1.5 text-sm leading-snug text-fg-2">{n.note}</p>}
+          </div>
+          {i < nodes.length - 1 && <span class="flow-arrow text-accent" aria-hidden="true">→</span>}
+        </li>
+      ))}
+    </ol>
+    {caption && <figcaption class="mt-5 max-w-[65ch] text-sm text-fg-2">{caption}</figcaption>}
+  </figure>
+)}
+
+<style>
+  /* Mobile: bertumpuk vertikal, panah mengarah ke bawah. */
+  .flow-step { flex-direction: column; }
+  .flow-arrow {
+    display: block;
+    text-align: center;
+    padding-top: 0.75rem;
+    transform: rotate(90deg);
+    line-height: 1;
+  }
+  @media (min-width: 768px) {
+    .flow-step { flex-direction: row; }
+    .flow-arrow { transform: none; padding: 0 0.6rem; align-self: center; }
+  }
+</style>

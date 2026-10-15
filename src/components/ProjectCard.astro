@@ -1,0 +1,75 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import FlowDiagram from './FlowDiagram.astro';
+import { getCover } from '@/lib/media';
+import { localizePath, t } from '@/i18n';
+import type { Project } from '@/lib/projects';
+
+interface Props {
+  project: Project;
+  size?: 'lg' | 'md';
+  class?: string;
+  index?: number;
+  /** Level heading judul kartu, mengikuti hierarki halaman. */
+  level?: 'h3' | 'h4';
+}
+const { project, size = 'md', class: cls, index = 0, level = 'h3' } = Astro.props;
+const Heading = level;
+const { data, slug, lang } = project;
+const cover = data.confidential ? undefined : getCover(slug);
+const href = localizePath(`/projects/${slug}`, lang);
+const ext = t(lang, 'project.external');
+const nodes = data.diagram?.nodes ?? [];
+const highlights = size === 'lg' ? data.highlights : data.highlights.slice(0, 2);
+---
+<article
+  class:list={[
+    'reveal group/card relative flex flex-col gap-7 overflow-hidden rounded-3xl border border-line bg-surface p-6 transition-[border-color,transform] duration-500 hover:-translate-y-1 hover:border-fg/25 md:p-8',
+    cls,
+  ]}
+  style={`--i:${index}`}
+  aria-labelledby={`p-${slug}`}
+>
+  <div class="flex items-start justify-between gap-6">
+    <div>
+      <p class="kicker">{data.role}</p>
+      <Heading id={`p-${slug}`} class:list={['mt-2 font-semibold leading-[1.05] tracking-[-0.03em]', size === 'lg' ? 'text-3xl md:text-[2.6rem]' : 'text-2xl md:text-[1.7rem]']}>
+        <a href={href} class="after:absolute after:inset-0 after:content-['']">{data.title}</a>
+      </Heading>
+    </div>
+    <span class="relative z-10 hidden size-11 flex-none items-center justify-center rounded-full border border-line text-fg-2 transition-colors group-hover/card:border-accent group-hover/card:bg-accent group-hover/card:text-bg sm:flex" aria-hidden="true">
+      <Icon name="arrow-up-right" />
+    </span>
+  </div>
+
+  <p class:list={['max-w-[56ch] text-fg-2', size === 'lg' ? 'text-lg' : '']}>{data.summary}</p>
+
+  {cover ? (
+    <Image src={cover} alt="" widths={[480, 800, 1200]} sizes="(min-width: 1024px) 60vw, 100vw" class="w-full rounded-2xl border border-line object-cover" />
+  ) : nodes.length > 1 ? (
+    size === 'lg' && nodes.length <= 4
+      ? <FlowDiagram nodes={nodes} label={t(lang, 'project.architecture')} />
+      : <FlowDiagram nodes={size === 'lg' ? nodes : nodes.slice(0, 3)} variant="compact" label={t(lang, 'project.architecture')} />
+  ) : null}
+
+  <div class="mt-auto flex flex-wrap items-center justify-between gap-4 border-t border-line pt-5">
+    {highlights.length > 0 && (
+      <ul class="flex flex-wrap gap-x-5 gap-y-1 text-sm font-medium text-accent">
+        {highlights.map((h) => <li>{h}</li>)}
+      </ul>
+    )}
+    <div class="relative z-10 flex items-center gap-2">
+      {data.repo && !data.confidential && (
+        <a href={data.repo} target="_blank" rel="noopener noreferrer" class="inline-flex h-10 items-center gap-2 rounded-full border border-line px-4 text-sm font-semibold transition-colors hover:border-fg">
+          <Icon name="github-logo" />{t(lang, 'project.github')}<span class="sr-only"> {ext}</span>
+        </a>
+      )}
+      {data.demo && (
+        <a href={data.demo} target="_blank" rel="noopener noreferrer" class="inline-flex h-10 items-center gap-2 rounded-full border border-line px-4 text-sm font-semibold transition-colors hover:border-fg">
+          {t(lang, 'project.live')}<Icon name="arrow-up-right" /><span class="sr-only"> {ext}</span>
+        </a>
+      )}
+    </div>
+  </div>
+</article>

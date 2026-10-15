@@ -1,0 +1,34 @@
+# Daftar sertifikat. Cara menambah:
+# 1. Taruh PDF di folder ini (mis. database-design.pdf).
+# 2. Tambahkan entri di bawah; `file` = nama PDF. `thumb` (gambar) opsional.
+# 3. date: YYYY, YYYY-MM, atau YYYY-MM-DD. Urutan tampil otomatis: terbaru dulu.
+- id: database-design
+  title: Database Design
+  issuer: Oracle Academy
+  date: "2026-03"
+  file: database-design.pdf
+- id: pilkades-digital
+  title: Certificate of Appreciation, Operator Teknis Pilkades Digital Kabupaten Bekasi
+  issuer: PT Bentang Inspirasi Teknologi
+  date: "2026"
+  file: pilkades-digital.pdf
+- id: java-fundamentals
+  title: Java Fundamentals
+  issuer: Oracle Academy
+  date: "2025-09"
+  file: java-fundamentals.pdf
+- id: java-programming
+  title: Java Programming
+  issuer: Oracle Academy
+  date: "2024-08"
+  file: java-programming.pdf
+- id: junior-network-administrator
+  title: Junior Network Administrator
+  issuer: Digital Talent Scholarship Kominfo (VSGA)
+  date: "2024-02"
+  file: junior-network-administrator.pdf
+- id: it-essentials
+  title: IT Essentials
+  issuer: Cisco Networking Academy
+  date: "2023-02-27"
+  file: it-essentials.pdf

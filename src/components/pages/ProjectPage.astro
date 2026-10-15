@@ -1,0 +1,102 @@
+---
+import { render } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Icon from '@/components/Icon.astro';
+import FlowDiagram from '@/components/FlowDiagram.astro';
+import Gallery from '@/components/Gallery.astro';
+import Zoomable from '@/components/Zoomable.astro';
+import { getCover } from '@/lib/media';
+import { getProjects, type Project } from '@/lib/projects';
+import { localizePath, t } from '@/i18n';
+
+interface Props { project: Project }
+const { project } = Astro.props;
+const { data, slug, lang } = project;
+const { Content } = await render(project);
+const cover = data.confidential ? undefined : getCover(slug);
+const ext = t(lang, 'project.external');
+
+// Project berikutnya (berputar) untuk navigasi di akhir halaman.
+const all = await getProjects(lang);
+const idx = all.findIndex((p) => p.slug === slug);
+const next = all.length > 1 ? all[(idx + 1) % all.length] : undefined;
+---
+<BaseLayout title={data.title} description={data.summary}>
+  <article>
+    <header class="wrap pb-12 pt-32 md:pt-40">
+      <a href={`${localizePath('/', lang)}#journey`} class="group inline-flex items-center gap-2 text-sm text-fg-2 hover:text-fg">
+        <Icon name="arrow-left" />{t(lang, 'project.back')}
+      </a>
+      <h1 class="display enter mt-8 max-w-[18ch]" style="--i:0">{data.title}</h1>
+      <p class="enter mt-6 max-w-[58ch] text-lg text-fg-2 md:text-xl" style="--i:1">{data.summary}</p>
+
+      <div class="enter mt-8 flex flex-wrap gap-3" style="--i:2">
+        {data.repo && !data.confidential && (
+          <a href={data.repo} target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+            <Icon name="github-logo" />{t(lang, 'project.github')}<span class="sr-only"> {ext}</span>
+          </a>
+        )}
+        {data.demo && (
+          <a href={data.demo} target="_blank" rel="noopener noreferrer" class="btn btn-ghost group">
+            {t(lang, 'project.live')}<Icon name="arrow-up-right" class="nudge-up nudge" /><span class="sr-only"> {ext}</span>
+          </a>
+        )}
+      </div>
+
+      <dl class="enter mt-12 grid gap-6 border-t border-line pt-6 sm:grid-cols-3" style="--i:3">
+        <div>
+          <dt class="font-mono text-xs text-fg-2">{t(lang, 'project.role')}</dt>
+          <dd class="mt-1 font-semibold">{data.role}</dd>
+        </div>
+        <div>
+          <dt class="font-mono text-xs text-fg-2">{t(lang, 'project.period')}</dt>
+          <dd class="mt-1 font-semibold">{data.period}</dd>
+        </div>
+        <div>
+          <dt class="font-mono text-xs text-fg-2">{t(lang, 'project.stack')}</dt>
+          <dd class="mt-1 font-mono text-sm leading-relaxed" translate="no">{data.stack.join(', ')}</dd>
+        </div>
+      </dl>
+    </header>
+
+    {cover && (
+      <div class="wrap pb-12">
+        <Zoomable src={cover} alt={data.title} class="overflow-hidden rounded-3xl border border-line">
+          <Image src={cover} alt={data.title} widths={[800, 1200, 1800]} sizes="(min-width: 1240px) 1160px, 100vw" class="w-full" loading="eager" />
+        </Zoomable>
+      </div>
+    )}
+
+    {data.diagram && (
+      <section class="reveal wrap" aria-labelledby="arch-title">
+        <div class="rounded-3xl border border-line bg-surface p-6 md:p-10">
+          <h2 id="arch-title" class="mb-8 text-2xl font-bold">{t(lang, 'project.architecture')}</h2>
+          <FlowDiagram nodes={data.diagram.nodes} caption={data.diagram.caption} label={t(lang, 'project.architecture')} />
+        </div>
+      </section>
+    )}
+
+    <div class="wrap py-16 md:py-20">
+      {data.confidential && (
+        <p class="mb-10 max-w-[68ch] rounded-2xl border border-line bg-surface px-5 py-4 text-fg-2">{t(lang, 'project.confidential')}</p>
+      )}
+      <div class="prose-case">
+        <Content />
+      </div>
+      {!data.confidential && <Gallery slug={slug} lang={lang} captions={data.captions} />}
+    </div>
+  </article>
+
+  {next && (
+    <nav class="wrap" aria-label={lang === 'id' ? 'Project berikutnya' : 'Next project'}>
+      <a href={localizePath(`/projects/${next.slug}`, lang)} class="group flex items-center justify-between gap-6 border-t border-line py-10 md:py-14">
+        <span>
+          <span class="block font-mono text-xs text-fg-2">{lang === 'id' ? 'Berikutnya' : 'Next'}</span>
+          <span class="mt-2 block text-2xl font-bold tracking-tight md:text-4xl">{next.data.title}</span>
+        </span>
+        <Icon name="arrow-right" class="nudge text-3xl md:text-4xl" />
+      </a>
+    </nav>
+  )}
+</BaseLayout>

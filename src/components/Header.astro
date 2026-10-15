@@ -1,0 +1,165 @@
+---
+import Icon from './Icon.astro';
+import { getLang, getAltPath, localizePath, t } from '@/i18n';
+import { profile } from '@/config/profile';
+
+const lang = getLang(Astro.url);
+const home = localizePath('/', lang);
+const anchor = (id: string) => `${home}#${id}`;
+const links = [
+  { href: anchor('capabilities'), label: t(lang, 'nav.capabilities') },
+  { href: anchor('journey'), label: t(lang, 'nav.journey') },
+  { href: anchor('process'), label: t(lang, 'nav.process') },
+  { href: anchor('credentials'), label: t(lang, 'nav.credentials') },
+  { href: anchor('contact'), label: t(lang, 'nav.contact') },
+];
+const altHref = getAltPath(Astro.url.pathname, lang);
+const altLang = lang === 'id' ? 'en' : 'id';
+const navLabel = lang === 'id' ? 'Navigasi utama' : 'Main navigation';
+const closeLabel = lang === 'id' ? 'Tutup menu' : 'Close menu';
+---
+<!-- Header biasa: ikut tergulir hilang, tidak menutupi konten. -->
+<header class="absolute inset-x-0 top-0 z-30" data-site-header>
+  <div class="wrap flex h-20 items-center justify-between gap-6 md:h-24">
+    <a href={home} class="font-display text-xl font-bold tracking-tight" aria-label={`${profile.shortName}, ${t(lang, 'nav.home')}`}>
+      {profile.shortName}<span class="text-accent">.</span>
+    </a>
+
+    <nav aria-label={navLabel} class="hidden lg:block">
+      <ul class="flex items-center gap-8 text-[0.95rem]">
+        {links.map((l) => (
+          <li><a href={l.href} class="nav-link text-fg-2 transition-colors hover:text-fg">{l.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <a
+      href={altHref}
+      hreflang={altLang}
+      lang={altLang}
+      class="mr-14 inline-flex items-center gap-1.5 text-sm font-semibold text-fg-2 transition-colors hover:text-fg lg:mr-0"
+      aria-label={t(lang, 'lang.switchLabel')}
+    >
+      <Icon name="translate" />{altLang.toUpperCase()}
+    </a>
+  </div>
+</header>
+
+<!-- Tombol menu bundar: selalu ada di HP, muncul di desktop setelah header tergulir hilang. -->
+<button
+  type="button"
+  class="menu-fab fixed right-4 top-4 z-40 flex size-12 items-center justify-center rounded-full bg-fg text-bg shadow-[0_10px_30px_-8px_rgb(0_0_0/0.7)] md:right-6 md:top-6 md:size-14"
+  aria-haspopup="dialog"
+  aria-controls="site-menu"
+  data-menu-open
+>
+  <span class="sr-only">{t(lang, 'nav.menu')}</span>
+  <Icon name="equals" class="text-xl md:text-2xl" />
+</button>
+
+<dialog id="site-menu" class="menu-sheet" aria-label={navLabel} data-menu>
+  <div class="wrap flex min-h-full flex-col">
+    <div class="flex h-20 items-center justify-between md:h-24">
+      <span class="font-display text-xl font-bold tracking-tight">{profile.shortName}<span class="text-accent">.</span></span>
+      <button type="button" class="flex size-12 items-center justify-center rounded-full border border-line transition-colors hover:border-fg md:size-14" data-menu-close>
+        <span class="sr-only">{closeLabel}</span>
+        <Icon name="x" class="text-xl" />
+      </button>
+    </div>
+
+    <nav aria-label={navLabel} class="flex flex-1 items-center py-10">
+      <ol class="flex w-full flex-col">
+        {links.map((l, i) => (
+          <li class="menu-item border-b border-line" style={`--i:${i}`}>
+            <a href={l.href} class="group flex items-baseline justify-between gap-6 py-4 md:py-5" data-menu-link>
+              <span class="font-display text-[clamp(2.2rem,7vw,5rem)] font-semibold leading-none tracking-[-0.035em] transition-colors group-hover:text-accent">{l.label}</span>
+              <Icon name="arrow-right" class="nudge text-2xl text-fg-3 group-hover:text-accent md:text-3xl" />
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+
+    <div class="flex flex-col gap-4 border-t border-line py-8 text-sm text-fg-2 sm:flex-row sm:items-center sm:justify-between">
+      <a href={`mailto:${profile.contact.email}`} class="link">{profile.contact.email}</a>
+      <div class="flex items-center gap-6">
+        <a href={profile.contact.github} target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-fg">GitHub<span class="sr-only"> {t(lang, 'project.external')}</span></a>
+        <a href={profile.contact.linkedin} target="_blank" rel="noopener noreferrer" class="transition-colors hover:text-fg">LinkedIn<span class="sr-only"> {t(lang, 'project.external')}</span></a>
+        <a href={altHref} hreflang={altLang} lang={altLang} class="font-semibold text-fg transition-colors hover:text-accent">{t(lang, 'lang.switch')}</a>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  const root = document.documentElement;
+  const header = document.querySelector<HTMLElement>('[data-site-header]');
+  const dialog = document.querySelector<HTMLDialogElement>('[data-menu]');
+  const openBtn = document.querySelector<HTMLButtonElement>('[data-menu-open]');
+
+  // Tombol menu muncul setelah header tidak terlihat lagi (tanpa scroll listener).
+  if (header && 'IntersectionObserver' in window) {
+    new IntersectionObserver(([entry]) => {
+      root.toggleAttribute('data-past-header', !entry.isIntersecting);
+    }).observe(header);
+  } else {
+    root.setAttribute('data-past-header', '');
+  }
+
+  if (dialog && openBtn) {
+    openBtn.addEventListener('click', () => {
+      dialog.showModal();
+      root.style.overflow = 'hidden';
+    });
+    dialog.addEventListener('close', () => {
+      root.style.overflow = '';
+      openBtn.focus();
+    });
+    dialog.querySelector('[data-menu-close]')?.addEventListener('click', () => dialog.close());
+    dialog.querySelectorAll('[data-menu-link]').forEach((a) => a.addEventListener('click', () => dialog.close()));
+  }
+</script>
+
+<style>
+  /* Desktop: tombol tersembunyi selama header masih terlihat. */
+  @media (min-width: 1024px) {
+    .menu-fab {
+      opacity: 0;
+      transform: scale(0.6);
+      pointer-events: none;
+      transition: opacity 0.35s, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    :global(html[data-past-header]) .menu-fab {
+      opacity: 1;
+      transform: none;
+      pointer-events: auto;
+    }
+  }
+  .menu-fab:hover { background: var(--color-accent); }
+
+  .menu-sheet {
+    margin: 0;
+    width: 100%;
+    max-width: none;
+    height: 100dvh;
+    max-height: none;
+    padding: 0;
+    border: 0;
+    background: var(--color-bg);
+    color: var(--color-fg);
+    overscroll-behavior: contain;
+  }
+  .menu-sheet::backdrop { background: var(--color-bg); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .menu-sheet[open] { animation: sheet-in 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+    .menu-sheet[open] .menu-item {
+      opacity: 0;
+      transform: translateY(24px);
+      animation: item-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation-delay: calc(var(--i) * 60ms + 120ms);
+    }
+    @keyframes sheet-in { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
+    @keyframes item-in { to { opacity: 1; transform: none; } }
+  }
+</style>

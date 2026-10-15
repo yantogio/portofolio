@@ -1,0 +1,47 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import { getCertificateUrl, getCertificateThumb } from '@/lib/media';
+import { t } from '@/i18n';
+import type { Lang } from '@/config/profile';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const certs = (await getCollection('certificates')).sort((a, b) => b.data.date.localeCompare(a.data.date));
+
+const monthFmt = new Intl.DateTimeFormat(lang === 'id' ? 'id-ID' : 'en-GB', { month: 'short', year: 'numeric', timeZone: 'UTC' });
+const fmt = (d: string) => {
+  const [y, m] = d.split('-');
+  return m ? monthFmt.format(new Date(Date.UTC(Number(y), Number(m) - 1, 1))) : y;
+};
+---
+<ul class="border-t border-line">
+  {certs.map((c, i) => {
+    const url = getCertificateUrl(c.data.file);
+    const thumb = getCertificateThumb(c.data.thumb);
+    const inner = (
+      <>
+        {thumb && <Image src={thumb} alt="" width={160} class="hidden aspect-[4/3] w-20 flex-none rounded-lg object-cover sm:block" />}
+        <span class="min-w-0 flex-1">
+          <span class="block font-semibold leading-snug" translate="no">{c.data.title}</span>
+          <span class="mt-0.5 block text-sm text-fg-2">{c.data.issuer}</span>
+        </span>
+        <span class="flex-none text-sm tabular-nums text-fg-2">{fmt(c.data.date)}</span>
+        {url && <Icon name="arrow-up-right" class="flex-none text-fg-3 transition-colors group-hover:text-accent" />}
+      </>
+    );
+    return (
+      <li class="reveal border-b border-line" style={`--i:${i % 3}`}>
+        {url ? (
+          <a href={url} target="_blank" rel="noopener noreferrer" class="group flex items-center gap-5 py-5 transition-colors hover:text-accent">
+            {inner}
+            <span class="sr-only">{t(lang, 'credentials.viewPdf')} {t(lang, 'project.external')}</span>
+          </a>
+        ) : (
+          <div class="flex items-center gap-5 py-5">{inner}</div>
+        )}
+      </li>
+    );
+  })}
+</ul>

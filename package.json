@@ -1,0 +1,29 @@
+{
+  "name": "portfolio",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "astro": "astro",
+    "postbuild": "node scripts/check-privacy.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
+    "@fontsource-variable/hanken-grotesk": "^5.3.0",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@phosphor-icons/core": "^2.1.1",
+    "@tailwindcss/vite": "^4.3.3",
+    "@vercel/analytics": "^2.0.1",
+    "astro": "^7.3.8",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@types/node": "^24.19.2",
+    "typescript": "^6.0.3"
+  }
+}

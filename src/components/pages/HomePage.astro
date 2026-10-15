@@ -1,0 +1,274 @@
+---
+import { Image } from 'astro:assets';
+import Icon from '@/components/Icon.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
+import Zoomable from '@/components/Zoomable.astro';
+import AvailabilityBadge from '@/components/AvailabilityBadge.astro';
+import CvButton from '@/components/CvButton.astro';
+import CertificateList from '@/components/CertificateList.astro';
+import { profile, type Lang } from '@/config/profile';
+import { hero, capabilities, journey, process, education, contact } from '@/content/home';
+import { getProjects, type Project } from '@/lib/projects';
+import { getPhoto, getJourneyPhoto } from '@/lib/media';
+import { localizePath, t } from '@/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const L = (v: { id: string; en: string }) => v[lang];
+
+const portrait = getPhoto('portrait');
+
+// Project ditempatkan di bab perjalanan; project featured yang belum disebut masuk bab terakhir.
+const featured = (await getProjects(lang)).filter((p) => p.data.featured);
+const bySlug = new Map(featured.map((p) => [p.slug, p]));
+const placed = new Set(journey.steps.flatMap((s) => s.projects ?? []));
+const leftovers = featured.filter((p) => !placed.has(p.slug));
+const chapters = journey.steps.map((s, i) => ({
+  ...s,
+  photo: getJourneyPhoto(s.year),
+  items: [
+    ...(s.projects ?? []).map((slug) => bySlug.get(slug)).filter((p): p is Project => !!p),
+    ...(i === journey.steps.length - 1 ? leftovers : []),
+  ],
+}));
+
+// Baris headline dengan bagian beraksen.
+const splitAccent = (line: { id: string; en: string; accent?: { id: string; en: string } }) => {
+  const text = L(line);
+  const accent = line.accent ? L(line.accent) : '';
+  const at = accent ? text.lastIndexOf(accent) : -1;
+  return at < 0 ? { before: text, accent: '' } : { before: text.slice(0, at), accent };
+};
+
+---
+<!-- Hero -->
+<section class="wrap grid min-h-[100dvh] items-center gap-12 pb-16 pt-28 lg:grid-cols-12 lg:gap-10 lg:pt-24">
+  <div class="flex flex-col gap-8 lg:col-span-8">
+    <div class="enter" style="--i:0"><AvailabilityBadge lang={lang} /></div>
+    <h1 class="display hero-name">
+      {hero.lines.map((line, i) => {
+        const { before, accent } = splitAccent(line);
+        return (
+          <span class="line-mask"><span style={`--i:${i}`}>{before}{accent && <span class="text-accent">{accent}</span>}</span></span>
+        );
+      })}
+    </h1>
+    <p class="enter max-w-[54ch] text-lg text-fg-2 md:text-xl" style="--i:2">{L(hero.lede)}</p>
+    <div class="enter flex flex-wrap items-center gap-3" style="--i:3">
+      <a href="#journey" class="btn btn-primary group">{L(hero.cta)}<Icon name="arrow-down" class="transition-transform duration-300 group-hover:translate-y-0.5" /></a>
+      <CvButton lang={lang} />
+    </div>
+  </div>
+
+  <div class="relative lg:col-span-4">
+    <div class="photo-in relative mx-auto aspect-[4/5] w-full max-w-[400px] overflow-hidden rounded-3xl bg-surface lg:ml-auto lg:mt-16">
+      {portrait ? (
+        <Zoomable src={portrait} alt={t(lang, 'hero.photoAlt')} class="size-full">
+          <Image
+            src={portrait}
+            alt={t(lang, 'hero.photoAlt')}
+            widths={[400, 640, 900]}
+            sizes="(min-width: 1024px) 36vw, 90vw"
+            loading="eager"
+            fetchpriority="high"
+            class="size-full object-cover"
+          />
+        </Zoomable>
+      ) : (
+        <div class="flex size-full items-end justify-between p-8" role="img" aria-label={t(lang, 'hero.photoAlt')}>
+          <span class="year-outline !text-[12rem]">Y</span>
+          <span class="mb-6 size-3 rounded-full bg-accent" aria-hidden="true"></span>
+        </div>
+      )}
+      <div class="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-bg/70 to-transparent" aria-hidden="true"></div>
+      <p class="pointer-events-none absolute bottom-5 left-6 right-6 flex justify-between text-sm">
+        <span class="font-semibold">Software Developer</span>
+        <span class="text-fg-2">{profile.location}</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Keahlian: baris besar yang membuka saat disorot -->
+<section id="capabilities" class="wrap py-24 md:py-36" aria-labelledby="cap-title">
+  <h2 id="cap-title" class="h2 border-b border-line pb-8">{L(capabilities.title)}</h2>
+  <ul class="cap-list">
+    {capabilities.areas.map((a, i) => (
+      <li class="cap-row reveal border-b border-line" style={`--i:${i}`}>
+        <div class="flex items-center justify-between gap-6 py-6 md:py-9">
+          <h3 class="cap-name font-display text-[clamp(2.2rem,6.2vw,5.6rem)] font-semibold leading-[0.95] tracking-[-0.035em]">{L(a.name)}</h3>
+          <span class="cap-icon hidden size-11 flex-none md:flex items-center justify-center rounded-full border border-line text-fg-2 md:size-14" aria-hidden="true">
+            <Icon name="plus" class="text-lg md:text-xl" />
+          </span>
+        </div>
+        <div class="cap-detail">
+          <div class="overflow-hidden">
+            <div class="flex flex-col gap-6 pb-8 md:flex-row md:items-end md:justify-between md:pb-10">
+              <ul class="flex max-w-3xl flex-wrap gap-2" aria-label={lang === 'id' ? 'Teknologi' : 'Technologies'}>
+                {a.stack.map((s) => (
+                  <li class="rounded-full border border-line bg-surface px-4 py-2 text-sm" translate="no">{s}</li>
+                ))}
+              </ul>
+              <a href={localizePath(a.proof.href, lang)} class="group inline-flex flex-none items-center gap-3 text-sm">
+                <span class="text-fg-2">{lang === 'id' ? 'Bukti' : 'Proof'}</span>
+                <span class="font-semibold">{a.proof.label}</span>
+                <span class="text-accent">{L(a.proof.note)}</span>
+                <Icon name="arrow-right" class="nudge text-accent" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<!-- Perjalanan -->
+<section id="journey" aria-labelledby="journey-title">
+  <div class="wrap">
+    <div class="grid gap-6 pb-12 lg:grid-cols-12">
+      <h2 id="journey-title" class="h2 lg:col-span-5">{L(journey.title)}</h2>
+      <p class="max-w-[46ch] text-lg text-fg-2 lg:col-span-6 lg:col-start-7 lg:pt-3">{L(journey.intro)}</p>
+    </div>
+
+    <ol>
+      {chapters.map((c) => (
+        <li class:list={['grid gap-6 border-t border-line lg:grid-cols-12 lg:gap-10', c.items.length ? 'py-12 md:py-16' : 'py-10 md:py-12']}>
+          <div class="lg:col-span-4">
+            <div class="lg:sticky lg:top-28">
+              <p class="year-outline" aria-hidden="true">{c.year}</p>
+              <p class="kicker mt-3">{c.range}</p>
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-8 lg:col-span-8">
+            <div class="reveal grid gap-6 md:grid-cols-[1fr_auto] md:items-start">
+              <div class="flex gap-5">
+                <span class="mt-1 flex size-12 flex-none items-center justify-center rounded-full border border-line text-accent" aria-hidden="true">
+                  <Icon name={c.icon} class="text-xl" />
+                </span>
+                <div>
+                  <h3 class="text-2xl font-semibold tracking-[-0.02em] md:text-[1.9rem]">
+                    <span class="sr-only">{c.range}: </span>{L(c.title)}
+                  </h3>
+                  <p class="mt-1 text-fg-2">{c.place}</p>
+                  <p class="mt-4 max-w-[52ch] text-lg leading-relaxed">{L(c.takeaway)}</p>
+                </div>
+              </div>
+              {c.photo && (
+                <Zoomable src={c.photo} alt={`${L(c.title)}, ${c.place}`} class="hidden w-44 overflow-hidden rounded-2xl md:block">
+                  <Image src={c.photo} alt={`${L(c.title)}, ${c.place}`} widths={[240, 400]} sizes="200px" class="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover/zoom:scale-105" />
+                </Zoomable>
+              )}
+            </div>
+
+            {c.items.length > 0 && (
+              <div class="grid gap-4 md:grid-cols-2">
+                {c.items.map((p, pi) => {
+                  // Kartu pertama selalu lebar; kartu terakhir ikut lebar bila sisanya ganjil.
+                  const wide = pi === 0 || (pi === c.items.length - 1 && (c.items.length - 1) % 2 === 1);
+                  return <ProjectCard project={p} size={wide ? 'lg' : 'md'} class={wide ? 'md:col-span-2' : ''} index={pi % 2} level="h4" />;
+                })}
+              </div>
+            )}
+          </div>
+        </li>
+      ))}
+    </ol>
+
+    <p class="border-t border-line py-10">
+      <a href={profile.contact.github} target="_blank" rel="noopener noreferrer" class="link group inline-flex items-center gap-2 text-lg">
+        <Icon name="github-logo" />{t(lang, 'project.allRepos')}<Icon name="arrow-up-right" class="nudge nudge-up" />
+        <span class="sr-only">{t(lang, 'project.external')}</span>
+      </a>
+    </p>
+  </div>
+</section>
+
+<!-- Cara kerja: kartu menumpuk saat digulir -->
+<section id="process" class="py-24 md:py-36" aria-labelledby="process-title">
+  <div class="wrap grid gap-12 lg:grid-cols-12">
+    <div class="lg:col-span-5">
+      <div class="lg:sticky lg:top-32">
+        <h2 id="process-title" class="h2">{L(process.title)}</h2>
+        <p class="mt-6 max-w-[22ch] font-display text-2xl font-medium leading-snug tracking-[-0.02em] text-fg-2 md:text-3xl">{L(process.intro)}</p>
+      </div>
+    </div>
+    <ol class="flex flex-col gap-6 lg:col-span-7">
+      {process.steps.map((s, i) => (
+        <li
+          class:list={[
+            'flex min-h-[19rem] flex-col gap-5 rounded-3xl p-7 md:p-10 lg:sticky',
+            i === 0 ? 'bg-fg text-bg' : i === 1 ? 'border border-line bg-surface-2' : i === 2 ? 'border border-line bg-surface' : 'border border-accent/40 bg-[#1a1c14]',
+          ]}
+          style={`top: calc(7rem + ${i} * 1.5rem)`}
+        >
+          <p class:list={['font-display text-6xl font-semibold leading-none tracking-[-0.04em]', i === 0 ? 'text-bg/30' : 'text-fg-3']} aria-hidden="true">0{i + 1}</p>
+          <h3 class="text-3xl font-semibold tracking-[-0.025em]">{L(s.title)}</h3>
+          <p class:list={['max-w-[48ch] text-lg', i === 0 ? 'text-bg/75' : 'text-fg-2']}>{L(s.body)}</p>
+          <a href={localizePath(s.href, lang)} class:list={['group mt-auto inline-flex items-center gap-2 font-semibold', i === 0 ? 'text-bg' : 'text-accent']}>
+            <span class="underline decoration-1 underline-offset-4">{L(s.evidence)}</span>
+            <Icon name="arrow-right" class="nudge" />
+          </a>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<!-- Kredensial -->
+<section id="credentials" class="wrap py-24 md:py-32" aria-labelledby="cred-title">
+  <div class="grid gap-14 border-t border-line pt-12 lg:grid-cols-12 lg:gap-10">
+    <div class="lg:col-span-5">
+      <h2 id="cred-title" class="h2">{t(lang, 'section.credentials')}</h2>
+      <h3 class="kicker mt-12">{t(lang, 'credentials.education')}</h3>
+      <ul class="mt-5 flex flex-col gap-8">
+        {education.map((e) => (
+          <li class="reveal">
+            <p class="kicker">{e.years}</p>
+            <p class="mt-1 font-display text-2xl font-semibold tracking-[-0.02em]">{L(e.title)}</p>
+            <p class="text-fg-2">{e.place}</p>
+            {L(e.detail) && <p class="mt-2 font-medium text-accent">{L(e.detail)}</p>}
+          </li>
+        ))}
+      </ul>
+    </div>
+    <div class="lg:col-span-7">
+      <h3 class="kicker mb-3">{t(lang, 'credentials.certificates')}</h3>
+      <CertificateList lang={lang} />
+    </div>
+  </div>
+</section>
+
+<!-- Kontak -->
+<section id="contact" class="wrap pb-20 pt-24 md:pb-28 md:pt-36" aria-labelledby="contact-title">
+  <h2 id="contact-title" class="display">
+    {contact.lines.map((line) => {
+      const { before, accent } = splitAccent(line);
+      return <span class="block">{before}{accent && <span class="text-accent">{accent}</span>}</span>;
+    })}
+  </h2>
+  <p class="mt-8 max-w-[48ch] text-lg text-fg-2">{L(contact.body)}</p>
+
+  <a
+    href={`mailto:${profile.contact.email}`}
+    class="group mt-12 inline-flex max-w-full items-center gap-4 border-b border-line pb-3 font-display text-[clamp(1.15rem,3.4vw,2.6rem)] font-semibold tracking-[-0.025em] transition-colors hover:border-accent hover:text-accent"
+  >
+    <span class="break-all sm:break-normal">{profile.contact.email}</span>
+    <Icon name="arrow-up-right" class="nudge nudge-up shrink-0" />
+  </a>
+
+  <ul class="mt-10 flex flex-wrap gap-3">
+    <li>
+      <a href={profile.contact.linkedin} target="_blank" rel="noopener noreferrer" class="btn btn-ghost">
+        <Icon name="linkedin-logo" />{t(lang, 'contact.linkedin')}<span class="sr-only"> {t(lang, 'project.external')}</span>
+      </a>
+    </li>
+    <li>
+      <a href={profile.contact.github} target="_blank" rel="noopener noreferrer" class="btn btn-ghost">
+        <Icon name="github-logo" />{t(lang, 'contact.github')}<span class="sr-only"> {t(lang, 'project.external')}</span>
+      </a>
+    </li>
+    <li><CvButton lang={lang} variant="primary" /></li>
+  </ul>
+</section>

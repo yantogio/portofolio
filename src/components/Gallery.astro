@@ -1,0 +1,33 @@
+---
+import { Image } from 'astro:assets';
+import Zoomable from './Zoomable.astro';
+import { getScreens } from '@/lib/media';
+import { t } from '@/i18n';
+import type { Lang } from '@/config/profile';
+
+interface Props { slug: string; lang: Lang; captions?: Record<string, string> }
+const { slug, lang, captions = {} } = Astro.props;
+const screens = getScreens(slug);
+---
+{screens.length > 0 && (
+  <section aria-labelledby="gallery-title" class="mt-16">
+    <h2 id="gallery-title" class="mb-6 text-2xl font-bold">{t(lang, 'project.gallery')}</h2>
+    <ul class="grid gap-6 md:grid-cols-2">
+      {screens.map((s, i) => {
+        const caption = captions[s.file] ?? s.label;
+        return (
+          <li class:list={[i === 0 && screens.length % 2 === 1 ? 'md:col-span-2' : '']}>
+            <figure>
+              <Zoomable src={s.src} alt={caption} class="overflow-hidden rounded-2xl border border-line">
+                <Image src={s.src} alt={caption} widths={[640, 1000, 1600]} sizes="(min-width: 768px) 50vw, 100vw" class="w-full" />
+              </Zoomable>
+              <figcaption class="mt-2 font-mono text-xs text-fg-2">{caption}</figcaption>
+            </figure>
+          </li>
+        );
+      })}
+    </ul>
+
+  </section>
+)}
+

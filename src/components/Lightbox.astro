@@ -1,0 +1,85 @@
+---
+/** Satu lightbox untuk seluruh situs. Membuka setiap tautan ber-atribut `data-lightbox`. */
+import Icon from './Icon.astro';
+import { getLang, t } from '@/i18n';
+
+const lang = getLang(Astro.url);
+---
+<dialog class="lightbox" aria-label={t(lang, 'lightbox.zoom')} data-lightbox-dialog>
+  <div class="flex h-full flex-col">
+    <div class="flex items-center justify-end p-4 md:p-6">
+      <button type="button" class="flex size-12 items-center justify-center rounded-full border border-line text-fg transition-colors hover:border-fg" data-lightbox-close>
+        <span class="sr-only">{t(lang, 'project.close')}</span>
+        <Icon name="x" class="text-xl" />
+      </button>
+    </div>
+    <figure class="flex min-h-0 flex-1 flex-col items-center justify-center gap-4 px-4 pb-6 md:px-10 md:pb-10" data-lightbox-stage>
+      <img alt="" class="lightbox-img min-h-0 max-w-full flex-1 rounded-2xl object-contain" data-lightbox-img />
+      <figcaption class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-center text-sm text-fg-2">
+        <span data-lightbox-caption></span>
+        <a href="#" target="_blank" rel="noopener noreferrer" class="link inline-flex items-center gap-1.5" data-lightbox-original>
+          {t(lang, 'lightbox.original')}<Icon name="arrow-up-right" /><span class="sr-only"> {t(lang, 'project.external')}</span>
+        </a>
+      </figcaption>
+    </figure>
+  </div>
+</dialog>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('[data-lightbox-dialog]');
+  const img = dialog?.querySelector<HTMLImageElement>('[data-lightbox-img]');
+  const caption = dialog?.querySelector<HTMLElement>('[data-lightbox-caption]');
+  const original = dialog?.querySelector<HTMLAnchorElement>('[data-lightbox-original]');
+  let opener: HTMLElement | null = null;
+
+  if (dialog && img && caption && original && typeof dialog.showModal === 'function') {
+    document.querySelectorAll<HTMLAnchorElement>('a[data-lightbox]').forEach((a) => {
+      a.addEventListener('click', (e) => {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return; // biarkan buka di tab baru
+        e.preventDefault();
+        opener = a;
+        const text = a.dataset.caption ?? a.querySelector('img')?.alt ?? '';
+        img.src = a.href;
+        img.alt = text;
+        caption.textContent = text;
+        original.href = a.dataset.original ?? a.href;
+        dialog.showModal();
+        document.documentElement.style.overflow = 'hidden';
+      });
+    });
+    dialog.querySelector('[data-lightbox-close]')?.addEventListener('click', () => dialog.close());
+    // Klik di luar foto menutup lightbox.
+    dialog.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (target === dialog || target.hasAttribute('data-lightbox-stage')) dialog.close();
+    });
+    dialog.addEventListener('close', () => {
+      document.documentElement.style.overflow = '';
+      img.removeAttribute('src');
+      opener?.focus();
+    });
+  }
+</script>
+
+<style>
+  .lightbox {
+    margin: 0;
+    width: 100%;
+    max-width: none;
+    height: 100dvh;
+    max-height: none;
+    padding: 0;
+    border: 0;
+    background: var(--color-bg);
+    color: var(--color-fg);
+    overscroll-behavior: contain;
+  }
+  .lightbox::backdrop { background: transparent; }
+  .lightbox-img { width: auto; height: auto; max-height: 100%; }
+  @media (prefers-reduced-motion: no-preference) {
+    .lightbox[open] { animation: lb-fade 0.3s ease-out; }
+    .lightbox[open] .lightbox-img { animation: lb-zoom 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+    @keyframes lb-fade { from { opacity: 0; } }
+    @keyframes lb-zoom { from { transform: scale(0.96); opacity: 0; } }
+  }
+</style>
